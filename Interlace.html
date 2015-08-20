@@ -1,0 +1,16 @@
+<head>
+  <title>Interlace</title>
+</head>
+
+<body>
+  <h1>Welcome <span id="lbl_Name"></span></h1>
+
+  {{> hello}}
+
+</body>
+
+<template name="hello">
+  <button>{{#if loginCheck}} Logout {{else}} Login {{/if}}</button>
+  <h2>Modules this semester</h2><br />
+  <span id="lbl_Modules"></span>
+</template>
