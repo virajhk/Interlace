@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ 	<title>Interlace</title>
+  	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="Interlace.css">
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="Interlace.js"></script>
+</head>
+<body>
+
+<div class="container">
+	<div class="jumbotron">
+		<div class="header_title">
+  			<h1>Interlace</h1>
+  			<p>THE NEWEST LEARNING PLATFORM</p> 
+  		</div>
+  		<div class="header_nav">
+  			<ul id="nav">
+  				<li class="dropdown">
+  					<a href="#" class="dropdown-toggle" data-toggle="dropdown">XU CHEN</a>
+    				<ul class="dropdown-menu">
+      					<li><a href="#">Profile</a></li>
+      					<li><a href="#">Log out</a></li>
+    				</ul>
+    			</li>
+  				<li>
+  					<a href="#">
+  						<span class="glyphicon glyphicon-home">
+  						</span>
+  					</a>
+  				</li>
+  				<li>
+  					<a href="#">
+  						<span class="glyphicon glyphicon-bell">
+  						</span>
+  					</a>
+  				</li>
+  			</ul>
+  		</div>
+  	</div>
+</div>
+
+
+<div class="container" id="Announment" onclick="expand_box(this)">
+	<p class="box_title">Announcement</p>
+</div>
+
+<div class="container" id="Forum" onclick="expand_box(this)">
+	<p class="box_title">Forum</p>
+</div>
+
+<div class="container" id="Multimedia" onclick="expand_box(this)">
+	<p class="box_title">Multimedia</p>
+</div>
+
+<div class="container" id="Files" onclick="expand_box(this)">
+	<p class="box_title">Files</p>
+</div>
+
+<script>
+function expand_box(element) {
+    if(element.offsetWidth == 200) {
+      element.setAttribute("style", "width:1068px; height:600px");
+    } else {
+      element.setAttribute("style", "width:200px; height:100px");
+    }
+}
+</script>
+
+</body>
+</html>

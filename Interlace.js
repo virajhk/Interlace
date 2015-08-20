@@ -120,3 +120,12 @@ function Populate_Module() {
         $('#lbl_Modules').html(lbl_Module);
     });
 }
+
+
+function expand_box(element) {
+    if(element.offsetWidth == 200) {
+      element.setAttribute("style", "width:1068px; height:600px");
+    } else {
+      element.setAttribute("style", "width:200px; height:100px");
+    }
+}
