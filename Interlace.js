@@ -1,4 +1,10 @@
+Router.route('/', function () {
+    this.render('firstPage');
+  });
+
 if (Meteor.isClient) {
+
+  Session.set('lecturer', false);
 
   var search = function () {
     var p = window.location.search.substr(1).split(/\&/), l = p.length, kv, r = {};
@@ -16,13 +22,12 @@ if (Meteor.isClient) {
   if (search.token && search.token.length > 0 && search.token != 'undefined') {
       Token = search.token;
       setCookie('token', Token);
-      //document.cookie="token="+Token;
   }
 
   if (getCookie('token') === '')
     logout();
 
-  Template.body.events({
+  Template.firstPage.events({
     'click #Announcement': function (e) {
       e.preventDefault();
       expand_box(document.getElementById('Announcement'));
@@ -60,10 +65,20 @@ if (Meteor.isClient) {
     }
   });
 
+  Template.firstPage.helpers({
+    lecturerCheck: function() {
+      return Session.get('lecturer');
+    },
+    studentCheck: function() {
+      return Session.get('student');
+    }
+  })
+
   if (getCookie('token') != '') {
     Session.set('logincheck', true);
     Populate_UserName();
-    Populate_Module();
+    //Populate_Module();
+    Populate_UserId();
   }
 }
 
@@ -76,9 +91,10 @@ if (Meteor.isServer) {
 function logout() {
   setCookie('token', '');
   setCookie('userName', '');
+  setCookie('userId', '');
   Session.set('logincheck', false);
-  $('#lbl_Name').html('');
-  $('#lbl_Modules').html('');
+  Session.set('lecturer', false);
+  Session.set('student', false);
 }
 
 function loginIVLE() {
@@ -100,6 +116,24 @@ function Populate_UserName() {
   jQuery.getJSON(url, function (data) {
       document.cookie="userName="+data;
       $('#lbl_Name').html(data);
+  });
+}
+
+function Populate_UserId() {
+  var APIKey = "HkwaOupOwuKRoKglP8Gep";
+  var APIDomain = "https://ivle.nus.edu.sg/";
+  var APIUrl = APIDomain + "api/lapi.svc/";
+  var Token = getCookie('token');
+  var url = APIUrl + "UserID_Get?output=json&callback=?&APIKey=" + APIKey + "&Token=" + Token;
+
+  jQuery.getJSON(url, function (data) {
+      document.cookie="userId="+data;
+      
+      if (/^[a-zA-Z]+$/.test(data)) {
+          Session.set('lecturer', true);
+      } else {
+          Session.set('student', true);
+      }
   });
 }
 
@@ -147,8 +181,6 @@ function Populate_Module() {
             lbl_Module += m.CourseCode + " " + m.CourseAcadYear + " - " + m.CourseName;
             lbl_Module += "<br />";
         }
-
-        $('#lbl_Modules').html(lbl_Module);
     });
 }
 
