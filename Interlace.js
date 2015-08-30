@@ -15,18 +15,42 @@ if (Meteor.isClient) {
   //check query string for search token
   if (search.token && search.token.length > 0 && search.token != 'undefined') {
       Token = search.token;
-      document.cookie="token="+Token;
+      setCookie('token', Token);
+      //document.cookie="token="+Token;
   }
 
   if (getCookie('token') === '')
     logout();
 
+  Template.body.events({
+    'click #Announcement': function (e) {
+      e.preventDefault();
+      expand_box(document.getElementById('Announcement'));
+    },
+    'click #Forum': function (e) {
+      e.preventDefault();
+      expand_box(document.getElementById('Forum'));
+    },
+    'click #Multimedia': function (e) {
+      e.preventDefault();
+      expand_box(document.getElementById('Multimedia'));
+    },
+    'click #Files': function (e) {
+      e.preventDefault();
+      expand_box(document.getElementById('Files'));
+    }
+  });
+
   Template.hello.events({
     'click button': function () {
       if (Session.get('logincheck') === false)
         loginIVLE();
-      else
-        logout();
+    },
+    'click #logout': function () {
+      logout();
+    },
+    'click #login': function () {
+      loginIVLE();
     }
   });
 
@@ -50,8 +74,8 @@ if (Meteor.isServer) {
 }
 
 function logout() {
-  document.cookie="token="+'';
-  document.cookie="userName="+'';
+  setCookie('token', '');
+  setCookie('userName', '');
   Session.set('logincheck', false);
   $('#lbl_Name').html('');
   $('#lbl_Modules').html('');
@@ -90,6 +114,13 @@ function getCookie(cname) {
     return "";
 }
 
+function setCookie(cname, cvalue) {
+    var d = new Date();
+    d.setTime(d.getTime() + (1*24*60*60*1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+}
+
 function Populate_Module() {
     var APIKey = "HkwaOupOwuKRoKglP8Gep";
     var APIDomain = "https://ivle.nus.edu.sg/";
@@ -105,7 +136,7 @@ function Populate_Module() {
     var ModuleURL = APIUrl + "Modules?APIKey=" + APIKey + "&AuthToken=" + Token + "&Duration=1&IncludeAllInfo=false&output=json&callback=?";
     //Get all the modules belonging to me
     jQuery.getJSON(ModuleURL, function (data) {
-        console.log(data);
+        //console.log(data);
 
         var lbl_Module = "";
         for (var i = 0; i < data.Results.length; i++) {

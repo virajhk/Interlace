@@ -1,51 +1,51 @@
 /* CSS declarations go here */
 .header_title {
-  			width: 500px;
-  		}
-  		.header_nav {
-  			width: 200px;
-  			float: right;
-  		}
-  		.box_title {
-  			color: rgb(250,250,250);
-  			line-height: 45px;
-  		}
-  		ul#nav li {
-  			display: inline;
-  		}
-  		#Announment {
-  			width: 200px;
-  			height: 100px;
-  			float: left;
-  			text-align: center;
-  			margin-left: 100px;
-  			margin-bottom: 50px;
-  			background-color: rgb(37, 99, 171);
-  		}
-  		#Forum {
-  			width: 200px;
-  			height: 100px;
-  			float: left;
-  			text-align: center;
-  			margin-left: 100px;
-  			margin-bottom: 50px;
-			background-color: rgb(72, 168, 67);
-  		}
-  		#Multimedia {
-  			width: 200px;
-  			height: 100px;
-  			float: left;
-  			text-align: center;
-  			margin-left: 100px;
-  			margin-bottom: 50px;
-  			background-color: rgb(235, 157, 61);
-  		}
-  		#Files {
-  			width: 200px;
-  			height: 100px;
-  			float: left;
-  			text-align: center;
-  			margin-left: 100px;
-  			margin-bottom: 50px;
-  			background-color: rgb(206, 60, 62);
-  		}
+  width: 500px;
+}
+.header_nav {
+	width: 200px;
+	float: right;
+}
+.box_title {
+	color: rgb(250,250,250);
+	line-height: 45px;
+}
+ul#nav li {
+	display: inline;
+}
+#Announcement {
+	width: 200px;
+	height: 100px;
+	float: left;
+	text-align: center;
+	margin-left: 100px;
+	margin-bottom: 50px;
+	background-color: rgb(37, 99, 171);
+}
+#Forum {
+	width: 200px;
+	height: 100px;
+	float: left;
+	text-align: center;
+	margin-left: 100px;
+	margin-bottom: 50px;
+background-color: rgb(72, 168, 67);
+}
+#Multimedia {
+	width: 200px;
+	height: 100px;
+	float: left;
+	text-align: center;
+	margin-left: 100px;
+	margin-bottom: 50px;
+	background-color: rgb(235, 157, 61);
+}
+#Files {
+	width: 200px;
+	height: 100px;
+	float: left;
+	text-align: center;
+	margin-left: 100px;
+	margin-bottom: 50px;
+	background-color: rgb(206, 60, 62);
+}

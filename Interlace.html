@@ -1,16 +1,66 @@
 <head>
-  <title>Interlace</title>
+  	<title>Interlace</title>
 </head>
 
 <body>
-  <h1>Welcome <span id="lbl_Name"></span></h1>
+	<div class="container">
+		<div class="jumbotron">
+			<div class="header_title">
+				<h1>Interlace</h1>
+				<p>THE NEWEST LEARNING PLATFORM</p> 
+			</div>
+			<div class="header_nav">
+				<ul id="nav">
+					{{> hello}}
+					
+				</ul>
+			</div>
+		</div>
+	</div>
 
-  {{> hello}}
+
+	<div class="container" id="Announcement">
+		<p class="box_title">Announcement</p>
+	</div>
+
+	<div class="container" id="Forum">
+		<p class="box_title">Forum</p>
+	</div>
+
+	<div class="container" id="Multimedia">
+		<p class="box_title">Multimedia</p>
+	</div>
+
+	<div class="container" id="Files">
+		<p class="box_title">Files</p>
+	</div>
 
 </body>
 
 <template name="hello">
-  <button>{{#if loginCheck}} Logout {{else}} Login {{/if}}</button>
-  <h2>Modules this semester</h2><br />
-  <span id="lbl_Modules"></span>
+	{{#unless loginCheck}}
+		<a id="login">Login</a>
+	{{else}}
+		<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown" id="lbl_Name"></a>
+			<ul class="dropdown-menu">
+				<li><a href="#">Profile</a></li>
+				<li><a id="logout">Logout</a></li>
+			</ul>
+		</li>
+	{{/unless}}
+
+	<li>
+		<a href="#">
+			<span class="glyphicon glyphicon-home"></span>
+		</a>
+	</li>
+	<li>
+		<a href="#">
+			<span class="glyphicon glyphicon-bell"></span>
+		</a>
+	</li>
+  	<!--<button>{{#if loginCheck}} Logout {{else}} Login {{/if}}</button>
+  	<h2>Modules this semester</h2><br />
+  	<span id="lbl_Modules"></span>-->
 </template>
