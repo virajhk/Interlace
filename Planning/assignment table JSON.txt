@@ -1,0 +1,9 @@
+assignement table
+
+
+module_code:
+lecture_id:
+assignment_id:
+model_answer_fileid:
+student_answers_fileid: 
+
