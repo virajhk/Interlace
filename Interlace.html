@@ -7,19 +7,7 @@
 </body>
 
 <template name="firstPage">
-	<div class="container">
-		<div class="jumbotron">
-			<div class="header_title">
-				<h1>Interlace</h1>
-				<p>THE NEWEST LEARNING PLATFORM</p> 
-			</div>
-			<div class="header_nav">
-				<ul id="nav">
-					{{> hello}}
-				</ul>
-			</div>
-		</div>
-	</div>
+	{{> hello}}
 	<div class="container" id="Announcement">
 		<p class="box_title">Announcement</p>
 	</div>
@@ -43,29 +31,73 @@
 			<h1>Student</h1>
 		{{/if}}
 	{{/if}}
+
+	<button id="createQuiz">Create Quiz</button>
 </template>
 
 <template name="hello">
-	{{#unless loginCheck}}
-		<a id="login">Login</a>
-	{{else}}
-		<li class="dropdown">
-			<a href="#" class="dropdown-toggle" data-toggle="dropdown" id="lbl_Name"></a>
-			<ul class="dropdown-menu">
-				<li><a href="#">Profile</a></li>
-				<li><a id="logout">Logout</a></li>
-			</ul>
-		</li>
-	{{/unless}}
+	<div class="container">
+		<div class="jumbotron">
+			<div class="header_title">
+				<h1>Interlace</h1>
+				<p>THE NEWEST LEARNING PLATFORM</p> 
+			</div>
+			<div class="header_nav">
+				<ul id="nav">
+					{{#unless loginCheck}}
+						<a id="login">Login</a>
+					{{else}}
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" id="lbl_Name"></a>
+							<ul class="dropdown-menu">
+								<li><a href="#">Profile</a></li>
+								<li><a id="logout">Logout</a></li>
+							</ul>
+						</li>
+					{{/unless}}
 
-	<li>
-		<a href="#">
-			<span class="glyphicon glyphicon-home"></span>
-		</a>
-	</li>
-	<li>
-		<a href="#">
-			<span class="glyphicon glyphicon-bell"></span>
-		</a>
-	</li>
+					<li>
+						<a href="#">
+							<span class="glyphicon glyphicon-home"></span>
+						</a>
+					</li>
+					<li>
+						<a href="#">
+							<span class="glyphicon glyphicon-bell"></span>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	
+</template>
+
+<template name="mcq_single">
+	<input type="radio" value="5"><input placeholder="Enter Option 5 here"><br>
+</template>
+
+<template name="question_mcq">
+	<input type="text" placeholder="Enter question here"><br>
+	<div id="{{question_id}}">
+		<input type="radio" name="{{same_name}}" value="1"><input placeholder="Enter Option 1 here"><br>
+		<input type="radio" name="{{same_name}}" value="2"><input placeholder="Enter Option 2 here"><br>
+		<input type="radio" name="{{same_name}}" value="3"><input placeholder="Enter Option 3 here"><br>
+		<input type="radio" name="{{same_name}}" value="4"><input placeholder="Enter Option 4 here"><br>
+	</div>
+	<button id="{{same_name}}" class="add_option">Add Option</button><br><br>
+</template>
+
+<template name="question_short_answer">
+	<input type="text" placeholder="Enter question here"><br>
+	<input type="text" placeholder="Enter model answer here"><br><br>
+</template>
+
+<template name="quizQuestions">
+	{{> hello}}
+	<h1>New Assignment</h1><br>
+	<form name="quiz" id="quiz">
+	</form>
+	<button id="add_mcq_question">Add MCQ Question</button>
+	<button id="add_short_question">Add Short Answer Question</button>
 </template>

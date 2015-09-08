@@ -1,6 +1,9 @@
 Router.route('/', function () {
-    this.render('firstPage');
-  });
+  //this.render('firstPage');
+  this.render('firstPage');
+});
+
+Router.route('/quizQuestions');
 
 if (Meteor.isClient) {
 
@@ -17,6 +20,7 @@ if (Meteor.isClient) {
 
   //variable to store the Authentication Token
   var Token = "";
+  var question_id = 0;
 
   //check query string for search token
   if (search.token && search.token.length > 0 && search.token != 'undefined') {
@@ -43,6 +47,10 @@ if (Meteor.isClient) {
     'click #Files': function (e) {
       e.preventDefault();
       expand_box(document.getElementById('Files'));
+    },
+    'click #createQuiz': function(e) {
+      e.preventDefault();
+      window.location = 'quizQuestions';
     }
   });
 
@@ -72,7 +80,39 @@ if (Meteor.isClient) {
     studentCheck: function() {
       return Session.get('student');
     }
+  });
+
+  Template.quizQuestions.events({
+    'click #add_mcq_question': function () {
+      Blaze.renderWithData(Template.question_mcq, {my: "data"}, $("#quiz")[0]);
+      return false;
+    },
+    'click #add_short_question': function () {
+      Blaze.renderWithData(Template.question_short_answer, {my: "data"}, $("#quiz")[0]);
+      return false;
+    }
+  });
+
+  Template.question_mcq.helpers({
+    question_id: function() {
+      question_id = question_id + 1;
+      var returnString = "question" + question_id.toString();
+      return returnString;
+    },
+    same_name: function() {
+      return question_id;
+    }
   })
+
+  Template.question_mcq.events({
+    'click .add_option': function (e) {
+      e.preventDefault();
+      var question = "#question" + e.currentTarget.id.toString();
+      //Blaze.renderWithData(Template.mcq_single, {my: "data"}, $("#options")[0]);
+      Blaze.renderWithData(Template.mcq_single, {my: "data"}, $(question)[0]);
+      return false;
+    }
+  });
 
   if (getCookie('token') != '') {
     Session.set('logincheck', true);
@@ -184,11 +224,14 @@ function Populate_Module() {
     });
 }
 
-
 function expand_box(element) {
     if(element.offsetWidth == 200) {
       element.setAttribute("style", "width:1068px; height:600px");
     } else {
       element.setAttribute("style", "width:200px; height:100px");
     }
+}
+
+function createQuiz() {
+
 }
