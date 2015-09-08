@@ -20,7 +20,13 @@ if (Meteor.isClient) {
 
   //variable to store the Authentication Token
   var Token = "";
+
   var question_id = 0;
+  var latest;
+
+  var mcqOptionsArray = [];
+  var questionArray = [];
+  var answerArray = [];
 
   //check query string for search token
   if (search.token && search.token.length > 0 && search.token != 'undefined') {
@@ -90,28 +96,182 @@ if (Meteor.isClient) {
     'click #add_short_question': function () {
       Blaze.renderWithData(Template.question_short_answer, {my: "data"}, $("#quiz")[0]);
       return false;
+    },
+    'click #save_assignment': function (e) {
+      e.preventDefault();
+
+      var module = document.getElementById('module_id').value;
+      var lecture = document.getElementById('lecture_id').value;
+      var assignment = document.getElementById('assignment_id').value;
+
+      console.log(assignment);
     }
   });
 
   Template.question_mcq.helpers({
     question_id: function() {
-      question_id = question_id + 1;
       var returnString = "question" + question_id.toString();
       return returnString;
     },
     same_name: function() {
       return question_id;
+    },
+    question_number: function() {
+      question_id = question_id + 1;
+      return question_id;
     }
-  })
+  });
+
+  Template.mcq_single.helpers({
+    question_id: function() {
+      var returnString = "question" + question_id.toString();
+      return returnString;
+    },
+    same_name: function() {
+      return latest;
+    }
+  });
+
+  Template.question_short_answer.helpers({
+    question_id: function() {
+      var returnString = "question" + question_id.toString();
+      return returnString;
+    },
+    question_number: function() {
+      question_id = question_id + 1;
+      return question_id;
+    }
+  });
 
   Template.question_mcq.events({
     'click .add_option': function (e) {
       e.preventDefault();
       var question = "#question" + e.currentTarget.id.toString();
-      //Blaze.renderWithData(Template.mcq_single, {my: "data"}, $("#options")[0]);
+      latest = e.currentTarget.id;
       Blaze.renderWithData(Template.mcq_single, {my: "data"}, $(question)[0]);
       return false;
-    }
+    },
+    'change .mcq_option': function (e) {
+      var value = e.currentTarget.value;
+      var classes = $(e.currentTarget).attr('class');
+      var classArray = classes.split(' ');
+
+      var found = 0;
+      for (var i=0; i<mcqOptionsArray.length; i++) {
+        if (mcqOptionsArray[i].question_number == classArray[1].substr(8, classArray[1].length) && mcqOptionsArray[i].valueNumber == classArray[2].substr(5, classArray[2].length)) {
+          mcqOptionsArray[i].value = value;
+          found = 1;
+        } 
+      }
+      if (found == 0) {
+        var options = {
+          question_number: classArray[1].substr(8, classArray[1].length),
+          valueNumber: classArray[2].substr(5, classArray[2].length),
+          value: value
+        };
+
+        mcqOptionsArray.push(options);
+      }
+
+      console.log(mcqOptionsArray);
+    },
+    'change .mcq_question': function (e) {
+      var value = e.currentTarget.value;
+      var classes = $(e.currentTarget).attr('class');
+      var classArray = classes.split(' ');
+
+      var found = 0;
+      for (var i=0; i<questionArray.length; i++) {
+        if (questionArray[i].question_number == classArray[1].substr(8, classArray[1].length)) {
+          questionArray[i].question = value;
+          found = 1;
+        } 
+      }
+      if (found == 0) {
+        var options = {
+          question_number: classArray[1].substr(8, classArray[1].length),
+          question: value
+        };
+
+        questionArray.push(options);
+      }
+
+      console.log(questionArray);
+    },
+    'change .mcq_radio': function (e) {
+      var value = e.currentTarget.value;
+      var classes = $(e.currentTarget).attr('class');
+      var classArray = classes.split(' ');
+
+      var found = 0;
+      for (var i=0; i<answerArray.length; i++) {
+        if (answerArray[i].question_number == classArray[1].substr(8, classArray[1].length)) {
+          answerArray[i].answer = value;
+          found = 1;
+        } 
+      }
+      if (found == 0) {
+        var options = {
+          type: 'MCQ',
+          question_number: classArray[1].substr(8, classArray[1].length),
+          answer: value
+        };
+
+        answerArray.push(options);
+      }
+
+      console.log(answerArray);
+    } 
+  });
+
+Template.question_short_answer.events({
+    'change .short_answer_question': function (e) {
+      var value = e.currentTarget.value;
+      var classes = $(e.currentTarget).attr('class');
+      var classArray = classes.split(' ');
+
+      var found = 0;
+      for (var i=0; i<questionArray.length; i++) {
+        if (questionArray[i].question_number == classArray[1].substr(8, classArray[1].length)) {
+          questionArray[i].question = value;
+          found = 1;
+        } 
+      }
+      if (found == 0) {
+        var options = {
+          question_number: classArray[1].substr(8, classArray[1].length),
+          question: value
+        };
+
+        questionArray.push(options);
+      }
+
+      console.log(questionArray);
+    },
+    'change .short_answer': function (e) {
+      var value = e.currentTarget.value;
+      var classes = $(e.currentTarget).attr('class');
+      var classArray = classes.split(' ');
+
+      var found = 0;
+      for (var i=0; i<answerArray.length; i++) {
+        if (answerArray[i].question_number == classArray[1].substr(8, classArray[1].length)) {
+          answerArray[i].answer = value;
+          found = 1;
+        } 
+      }
+      if (found == 0) {
+        var options = {
+          type: 'short_answer',
+          question_number: classArray[1].substr(8, classArray[1].length),
+          answer: value
+        };
+
+        answerArray.push(options);
+      }
+
+      console.log(answerArray);
+    }  
   });
 
   if (getCookie('token') != '') {
@@ -230,8 +390,4 @@ function expand_box(element) {
     } else {
       element.setAttribute("style", "width:200px; height:100px");
     }
-}
-
-function createQuiz() {
-
 }

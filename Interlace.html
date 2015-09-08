@@ -74,30 +74,40 @@
 </template>
 
 <template name="mcq_single">
-	<input type="radio" value="5"><input placeholder="Enter Option 5 here"><br>
+	<input type="radio" name="{{same_name}}" value="5"><input class="mcq_option {{question_id}} value5" placeholder="Enter Option 5 here"><br>
 </template>
 
 <template name="question_mcq">
-	<input type="text" placeholder="Enter question here"><br>
+	<p style="display:inline">{{question_number}}. </p>
+	<input class="mcq_question {{question_id}}" style="display:inline" type="text" placeholder="Enter question here"><br>
 	<div id="{{question_id}}">
-		<input type="radio" name="{{same_name}}" value="1"><input placeholder="Enter Option 1 here"><br>
-		<input type="radio" name="{{same_name}}" value="2"><input placeholder="Enter Option 2 here"><br>
-		<input type="radio" name="{{same_name}}" value="3"><input placeholder="Enter Option 3 here"><br>
-		<input type="radio" name="{{same_name}}" value="4"><input placeholder="Enter Option 4 here"><br>
+		<input class="mcq_radio {{question_id}}" type="radio" name="{{same_name}}" value="1"><input class="mcq_option {{question_id}} value1" placeholder="Enter Option 1 here"><br>
+		<input class="mcq_radio {{question_id}}" type="radio" name="{{same_name}}" value="2"><input class="mcq_option {{question_id}} value2" placeholder="Enter Option 2 here"><br>
+		<input class="mcq_radio {{question_id}}" type="radio" name="{{same_name}}" value="3"><input class="mcq_option {{question_id}} value3" placeholder="Enter Option 3 here"><br>
+		<input class="mcq_radio {{question_id}}" type="radio" name="{{same_name}}" value="4"><input class="mcq_option {{question_id}} value4" placeholder="Enter Option 4 here"><br>
 	</div>
 	<button id="{{same_name}}" class="add_option">Add Option</button><br><br>
 </template>
 
 <template name="question_short_answer">
-	<input type="text" placeholder="Enter question here"><br>
-	<input type="text" placeholder="Enter model answer here"><br><br>
+	<p style="display:inline">{{question_number}}. </p>
+	<input id="{{question_id}}" class="short_answer_question {{question_id}}" style="display:inline" type="text" placeholder="Enter question here"><br>
+	<input class="short_answer {{question_id}}" type="text" placeholder="Enter model answer here"><br><br>
 </template>
 
 <template name="quizQuestions">
 	{{> hello}}
-	<h1>New Assignment</h1><br>
-	<form name="quiz" id="quiz">
+	<h1 style="margin-left: 40px;">New Assignment</h1><br>
+	<form style="margin-left: 40px;" name="quiz">
+		<p style="display: inline">Module Code:</p>
+		<input style="display: inline" type="text" id="module_id" placeholder="Enter Module Code here"><br><br>
+		<p style="display: inline">Lecture Number:</p>
+		<input style="display: inline" type="text" id="lecture_id" placeholder="Enter Lecture number here"><br><br>
+		<p style="display: inline">Assignment Number:</p>
+		<input style="display: inline" type="text" id="assignment_id" placeholder="Enter Assignment number here"><br><br>
+		<div id="quiz"></div>
+		<button id="add_mcq_question">Add MCQ Question</button>
+		<button id="add_short_question">Add Short Answer Question</button><br><br>
+		<button id="save_assignment">Save Assignment</button>
 	</form>
-	<button id="add_mcq_question">Add MCQ Question</button>
-	<button id="add_short_question">Add Short Answer Question</button>
 </template>
