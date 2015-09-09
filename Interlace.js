@@ -104,7 +104,73 @@ if (Meteor.isClient) {
       var lecture = document.getElementById('lecture_id').value;
       var assignment = document.getElementById('assignment_id').value;
 
-      console.log(assignment);
+      var allQuestions = [];
+
+      var question_number = 0;
+
+      for (var i=0; i<questionArray.length; i++) {
+        var question;
+        var answerType;
+        var answer;
+        var mcq_options = [];
+
+        if ((i+1) == questionArray[i].question_number) {
+          question_number = questionArray[i].question_number;
+          question = questionArray[i].question;
+
+          for (var j=0; j<answerArray.length; j++) {
+            if (question_number == answerArray[j].question_number) {
+              answerType = answerArray[j].type;
+
+              if (answerType == 'short_answer') {
+                answer = answerArray[j].answer;
+                var questionObject = {
+                  type: answerType,
+                  question: question,
+                  answer: answer
+                };
+                allQuestions.push(questionObject);
+                break;
+              } else if (answerType == 'MCQ') {
+                answer = answerArray[j].answer;
+                for (var k=0; k<mcqOptionsArray.length; k++) {
+                  if (question_number == mcqOptionsArray[k].question_number) {
+                    var mcqAnswer;
+                    if (answer == mcqOptionsArray[k].valueNumber) {
+                      mcqAnswer = 1;
+                    } else {
+                      mcqAnswer = 0;
+                    }
+                    var option = {
+                      optionValue: mcqOptionsArray[k].value,
+                      answer: mcqAnswer
+                    };
+                    mcq_options.push(option);
+                  }
+                }
+
+                var questionObject = {
+                  type: answerType,
+                  question: question,
+                  answer: mcq_options
+                };
+
+                allQuestions.push(questionObject);
+                break;
+              }
+            }
+          }
+        } 
+      }
+
+      var ale = {
+        module_id: module,
+        lecture_id: lecture,
+        assignment_id: assignment,
+        questions: allQuestions
+      };
+
+      console.log(ale);
     }
   });
 
