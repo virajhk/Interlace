@@ -4,8 +4,12 @@ Router.route('/', function () {
 });
 
 Router.route('/quizQuestions');
+Router.route('/editQuiz');
+
+Assignments = new Mongo.Collection("assignments");
 
 if (Meteor.isClient) {
+  Meteor.subscribe('getAssignment');
 
   Session.set('lecturer', false);
 
@@ -57,6 +61,10 @@ if (Meteor.isClient) {
     'click #createQuiz': function(e) {
       e.preventDefault();
       window.location = 'quizQuestions';
+    },
+    'click #editQuiz': function(e) {
+      e.preventDefault();
+      window.location = 'editQuiz';
     }
   });
 
@@ -100,77 +108,7 @@ if (Meteor.isClient) {
     'click #save_assignment': function (e) {
       e.preventDefault();
 
-      var module = document.getElementById('module_id').value;
-      var lecture = document.getElementById('lecture_id').value;
-      var assignment = document.getElementById('assignment_id').value;
-
-      var allQuestions = [];
-
-      var question_number = 0;
-
-      for (var i=0; i<questionArray.length; i++) {
-        var question;
-        var answerType;
-        var answer;
-        var mcq_options = [];
-
-        if ((i+1) == questionArray[i].question_number) {
-          question_number = questionArray[i].question_number;
-          question = questionArray[i].question;
-
-          for (var j=0; j<answerArray.length; j++) {
-            if (question_number == answerArray[j].question_number) {
-              answerType = answerArray[j].type;
-
-              if (answerType == 'short_answer') {
-                answer = answerArray[j].answer;
-                var questionObject = {
-                  type: answerType,
-                  question: question,
-                  answer: answer
-                };
-                allQuestions.push(questionObject);
-                break;
-              } else if (answerType == 'MCQ') {
-                answer = answerArray[j].answer;
-                for (var k=0; k<mcqOptionsArray.length; k++) {
-                  if (question_number == mcqOptionsArray[k].question_number) {
-                    var mcqAnswer;
-                    if (answer == mcqOptionsArray[k].valueNumber) {
-                      mcqAnswer = 1;
-                    } else {
-                      mcqAnswer = 0;
-                    }
-                    var option = {
-                      optionValue: mcqOptionsArray[k].value,
-                      answer: mcqAnswer
-                    };
-                    mcq_options.push(option);
-                  }
-                }
-
-                var questionObject = {
-                  type: answerType,
-                  question: question,
-                  answer: mcq_options
-                };
-
-                allQuestions.push(questionObject);
-                break;
-              }
-            }
-          }
-        } 
-      }
-
-      var ale = {
-        module_id: module,
-        lecture_id: lecture,
-        assignment_id: assignment,
-        questions: allQuestions
-      };
-
-      console.log(ale);
+      saveAssignment(questionArray, answerArray, mcqOptionsArray, "new");
     }
   });
 
@@ -338,7 +276,95 @@ Template.question_short_answer.events({
 
       console.log(answerArray);
     }  
-  });
+});
+
+Template.editQuiz.events({
+    'click #retrieve_ale': function (e) {
+      e.preventDefault();
+      var id = document.getElementById('module_id_get').value + '_' + document.getElementById('lecture_id_get').value + '_' + document.getElementById('assignment_id_get').value;
+      var assignmentInfo = Assignments.find({_id: id}).fetch();
+
+      console.log(assignmentInfo);
+
+      for (var i=0; i<assignmentInfo[0].data.questions.length; i++) {
+
+        var questionOption = {
+          question_number: (i+1).toString(),
+          question: assignmentInfo[0].data.questions[i].question
+        };
+
+        questionArray.push(questionOption);
+
+        if (assignmentInfo[0].data.questions[i].type == "short_answer") {
+          addShortAnswerQuestion();
+
+          var questionClass = "short_answer_question question" + (i+1).toString();
+          var question = document.getElementsByClassName(questionClass);
+          question[0].value = assignmentInfo[0].data.questions[i].question;
+
+          var answerClass = "short_answer question" + (i+1).toString();
+          var answer = document.getElementsByClassName(answerClass);
+          answer[0].value = assignmentInfo[0].data.questions[i].answer;
+
+          var options = {
+            type: 'short_answer',
+            question_number: (i+1).toString(),
+            answer: assignmentInfo[0].data.questions[i].answer
+          };
+
+          answerArray.push(options);
+        } else {
+          addMcqQuestion();
+
+          var questionClass = "mcq_question question" + (i+1).toString();
+          var question = document.getElementsByClassName(questionClass);
+          question[0].value = assignmentInfo[0].data.questions[i].question;
+
+          for (var j=0; j<assignmentInfo[0].data.questions[i].answer.length; j++) {
+            var question_id = "question" + (i+1).toString();
+            var answerClass = "mcq_option " + question_id +  " value" + (j+1).toString();
+            var answer = document.getElementsByClassName(answerClass);
+            answer[0].value = assignmentInfo[0].data.questions[i].answer[j].optionValue;
+
+            var options = {
+              question_number: (i+1).toString(),
+              valueNumber: (j+1).toString(),
+              value: assignmentInfo[0].data.questions[i].answer[j].optionValue
+            };
+
+            mcqOptionsArray.push(options);
+
+            if (assignmentInfo[0].data.questions[i].answer[j].answer == 1) {
+              var optionId = "mcq_radio_" + (j+1).toString() +  " question" + (i+1).toString();
+              var option = document.getElementsByClassName(optionId);
+              option[0].checked = true;
+
+              var answerOption = {
+                type: 'MCQ',
+                question_number: (i+1).toString(),
+                answer: (j+1).toString()
+              };
+
+              answerArray.push(answerOption);
+            }
+          
+          }
+        }
+      }
+    },
+    'click #add_mcq_question': function () {
+      Blaze.renderWithData(Template.question_mcq, {my: "data"}, $("#quiz_retrieved")[0]);
+      return false;
+    },
+    'click #add_short_question': function () {
+      Blaze.renderWithData(Template.question_short_answer, {my: "data"}, $("#quiz_retrieved")[0]);
+      return false;
+    },
+    'click #save_assignment': function(e) {
+      e.preventDefault();
+      saveAssignment(questionArray, answerArray, mcqOptionsArray, "edit");
+    }
+});
 
   if (getCookie('token') != '') {
     Session.set('logincheck', true);
@@ -348,10 +374,14 @@ Template.question_short_answer.events({
   }
 }
 
-if (Meteor.isServer) {
-  Meteor.startup(function () {
-    // code to run on server at startup
-  });
+function addMcqQuestion() {
+  Blaze.renderWithData(Template.question_mcq, {my: "data"}, $("#quiz_retrieved")[0]);
+  return false;
+}
+
+function addShortAnswerQuestion() {
+  Blaze.renderWithData(Template.question_short_answer, {my: "data"}, $("#quiz_retrieved")[0]);
+  return false;
 }
 
 function logout() {
@@ -456,4 +486,96 @@ function expand_box(element) {
     } else {
       element.setAttribute("style", "width:200px; height:100px");
     }
+}
+
+function saveAssignment(questionArray, answerArray, mcqOptionsArray, source) {
+  var module;
+  var lecture;
+  var assignment;
+
+  if (source == "new") {
+    module = document.getElementById('module_id').value;
+    lecture = document.getElementById('lecture_id').value;
+    assignment = document.getElementById('assignment_id').value;
+  } else if(source == "edit") {
+    module = document.getElementById('module_id_get').value;
+    lecture = document.getElementById('lecture_id_get').value;
+    assignment = document.getElementById('assignment_id_get').value;
+  }
+
+  var allQuestions = [];
+
+  var question_number = 0;
+
+  for (var i=0; i<questionArray.length; i++) {
+    var question;
+    var answerType;
+    var answer;
+    var mcq_options = [];
+
+    if ((i+1) == questionArray[i].question_number) {
+      question_number = questionArray[i].question_number;
+      question = questionArray[i].question;
+
+      for (var j=0; j<answerArray.length; j++) {
+        if (question_number == answerArray[j].question_number) {
+          answerType = answerArray[j].type;
+
+          if (answerType == 'short_answer') {
+            answer = answerArray[j].answer;
+            var questionObject = {
+              type: answerType,
+              question: question,
+              answer: answer
+            };
+            allQuestions.push(questionObject);
+            break;
+          } else if (answerType == 'MCQ') {
+            answer = answerArray[j].answer;
+            for (var k=0; k<mcqOptionsArray.length; k++) {
+              if (question_number == mcqOptionsArray[k].question_number) {
+                var mcqAnswer;
+                if (answer == mcqOptionsArray[k].valueNumber) {
+                  mcqAnswer = 1;
+                } else {
+                  mcqAnswer = 0;
+                }
+                var option = {
+                  optionValue: mcqOptionsArray[k].value,
+                  answer: mcqAnswer
+                };
+                mcq_options.push(option);
+              }
+            }
+
+            var questionObject = {
+              type: answerType,
+              question: question,
+              answer: mcq_options
+            };
+
+            allQuestions.push(questionObject);
+            break;
+          }
+        }
+      }
+    } 
+  }
+
+  var ale = {
+    module_id: module,
+    lecture_id: lecture,
+    assignment_id: assignment,
+    questions: allQuestions
+  };
+
+  var id = ale.module_id + '_' + ale.lecture_id + '_' + ale.assignment_id;
+  var exists = Assignments.find({_id: id}).fetch();
+  
+  if (exists.length == 0)
+    Meteor.call('saveAssignment', id, ale);
+  else
+    Meteor.call('editAssignment', id, ale);
+  
+  console.log(ale);
 }

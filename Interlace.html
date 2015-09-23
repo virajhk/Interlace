@@ -33,6 +33,7 @@
 	{{/if}}
 
 	<button id="createQuiz">Create Quiz</button>
+	<button id="editQuiz">Edit Quiz</button>
 </template>
 
 <template name="hello">
@@ -74,17 +75,17 @@
 </template>
 
 <template name="mcq_single">
-	<input type="radio" name="{{same_name}}" value="5"><input class="mcq_option {{question_id}} value5" placeholder="Enter Option 5 here"><br>
+	<input type="radio" class="mcq_radio_5 {{question_id}} mcq_radio" name="{{same_name}}" value="5"><input class="mcq_option {{question_id}} value5" placeholder="Enter Option 5 here"><br>
 </template>
 
 <template name="question_mcq">
 	<p style="display:inline">{{question_number}}. </p>
 	<input class="mcq_question {{question_id}}" style="display:inline" type="text" placeholder="Enter question here"><br>
 	<div id="{{question_id}}">
-		<input class="mcq_radio {{question_id}}" type="radio" name="{{same_name}}" value="1"><input class="mcq_option {{question_id}} value1" placeholder="Enter Option 1 here"><br>
-		<input class="mcq_radio {{question_id}}" type="radio" name="{{same_name}}" value="2"><input class="mcq_option {{question_id}} value2" placeholder="Enter Option 2 here"><br>
-		<input class="mcq_radio {{question_id}}" type="radio" name="{{same_name}}" value="3"><input class="mcq_option {{question_id}} value3" placeholder="Enter Option 3 here"><br>
-		<input class="mcq_radio {{question_id}}" type="radio" name="{{same_name}}" value="4"><input class="mcq_option {{question_id}} value4" placeholder="Enter Option 4 here"><br>
+		<input class="mcq_radio_1 {{question_id}} mcq_radio" type="radio" name="{{same_name}}" value="1"><input class="mcq_option {{question_id}} value1" placeholder="Enter Option 1 here"><br>
+		<input class="mcq_radio_2 {{question_id}} mcq_radio" type="radio" name="{{same_name}}" value="2"><input class="mcq_option {{question_id}} value2" placeholder="Enter Option 2 here"><br>
+		<input class="mcq_radio_3 {{question_id}} mcq_radio" type="radio" name="{{same_name}}" value="3"><input class="mcq_option {{question_id}} value3" placeholder="Enter Option 3 here"><br>
+		<input class="mcq_radio_4 {{question_id}} mcq_radio" type="radio" name="{{same_name}}" value="4"><input class="mcq_option {{question_id}} value4" placeholder="Enter Option 4 here"><br>
 	</div>
 	<button id="{{same_name}}" class="add_option">Add Option</button><br><br>
 </template>
@@ -106,6 +107,25 @@
 		<p style="display: inline">ALE Number:</p>
 		<input style="display: inline" type="text" id="assignment_id" placeholder="Enter Assignment number here"><br><br>
 		<div id="quiz"></div>
+		<button id="add_mcq_question">Add MCQ Question</button>
+		<button id="add_short_question">Add Short Answer Question</button><br><br>
+		<button id="save_assignment">Save Assignment</button>
+	</form>
+</template>
+
+<template name="editQuiz">
+	{{> hello}}
+	<h1 style="margin-left: 40px;">Edit ALE</h1>
+	<h3 style="margin-left: 40px;">Please enter the module code, lecture number and ALE number to be edited.</h3><br>
+	<form style="margin-left: 40px;" name="quiz">
+		<p style="display: inline">Module Code:</p>
+		<input style="display: inline" type="text" id="module_id_get" placeholder="Enter Module Code here"><br><br>
+		<p style="display: inline">Lecture Number:</p>
+		<input style="display: inline" type="text" id="lecture_id_get" placeholder="Enter Lecture number here"><br><br>
+		<p style="display: inline">ALE Number:</p>
+		<input style="display: inline" type="text" id="assignment_id_get" placeholder="Enter Assignment number here"><br><br>
+		<button id="retrieve_ale">Retrieve ALE</button><br><br>
+		<div id="quiz_retrieved"></div>
 		<button id="add_mcq_question">Add MCQ Question</button>
 		<button id="add_short_question">Add Short Answer Question</button><br><br>
 		<button id="save_assignment">Save Assignment</button>
