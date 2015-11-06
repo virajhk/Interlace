@@ -5,6 +5,7 @@ Router.route('/', function () {
 
 Router.route('/quizQuestions');
 Router.route('/editQuiz');
+Router.route('/releaseQuiz');
 
 Assignments = new Mongo.Collection("assignments");
 
@@ -65,6 +66,10 @@ if (Meteor.isClient) {
     'click #editQuiz': function(e) {
       e.preventDefault();
       window.location = 'editQuiz';
+    },
+    'click #releaseQuiz': function(e) {
+      e.preventDefault();
+      window.location = 'releaseQuiz';
     }
   });
 
@@ -78,6 +83,9 @@ if (Meteor.isClient) {
     },
     'click #login': function () {
       loginIVLE();
+    },
+    'click #home': function () {
+      window.location = "/"
     }
   });
 
@@ -362,7 +370,25 @@ Template.editQuiz.events({
     },
     'click #save_assignment': function(e) {
       e.preventDefault();
-      saveAssignment(questionArray, answerArray, mcqOptionsArray, "edit");
+      if (confirm('Are you sure you want to save the changes to the ALE?')) {
+        saveAssignment(questionArray, answerArray, mcqOptionsArray, "edit");
+      }
+    }
+});
+
+Template.editQuiz.helpers({});
+
+Template.releaseQuiz.events({
+    'click #release_ale': function (e) {
+      e.preventDefault();
+      var id = document.getElementById('module_id_release').value + '_' + document.getElementById('lecture_id_release').value + '_' + document.getElementById('assignment_id_release').value;
+      var assignmentInfo = Assignments.find({_id: id}).fetch();
+
+      console.log(assignmentInfo);
+    },
+    'click #getALE': function (e) {
+      var allALEs = Assignments.find().fetch();
+      console.log(allALEs);
     }
 });
 
@@ -397,7 +423,13 @@ function loginIVLE() {
   var APIKey = "HkwaOupOwuKRoKglP8Gep";
   var APIDomain = "https://ivle.nus.edu.sg/";
   var APIUrl = APIDomain + "api/lapi.svc/";
-  var LoginURL = APIDomain + "api/login/?apikey=HkwaOupOwuKRoKglP8Gep&url=http%3A%2F%2Flocalhost:3000";
+  var returnURL = '';
+  if (window.location.href.indexOf("localhost") > -1)
+    returnURL = "localhost:3000";
+  else if (window.location.href.indexOf("") > -1)
+    returnURL = "interlace.meteor.com";
+
+  var LoginURL = APIDomain + "api/login/?apikey=HkwaOupOwuKRoKglP8Gep&url=http%3A%2F%2F" + returnURL;
 
   window.location = LoginURL;
 }
