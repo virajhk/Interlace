@@ -6,7 +6,50 @@
 
 </body>
 <template name="hello">
-	<div class="container">
+	<nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="#page-top" id="home">Interlace</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a class="page-scroll" href="#about">About</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#services">Services</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="#contact">Contact</a>
+                    </li>
+                    {{#unless loginCheck}}
+						<li><a id="login">Login</a></li>
+					{{else}}
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" id="lbl_Name"></a>
+							<ul class="dropdown-menu">
+								<li><a href="#">Profile</a></li>
+								<li><a id="logout">Logout</a></li>
+							</ul>
+						</li>
+					{{/unless}}
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+
+	<!--<div class="container">
 		<div class="jumbotron">
 			<div class="header_title">
 				<h1>Interlace</h1>
@@ -37,10 +80,20 @@
 				</ul>
 			</div>
 		</div>
-	</div>	
+	</div>-->
 </template>
 
 <template name="firstPage">
+	<header>
+        <div class="header-content">
+            <div class="header-content-inner">
+                <h1>The newest collaborative learning platform</h1>
+                <hr>
+                <p>Interlace is designed to facilitate in-class collaboration learning through various activities, quizzes and discussions.</p>
+                <a href="#about" class="btn btn-primary btn-xl page-scroll">Find Out More</a>
+            </div>
+        </div>
+    </header>
 	{{> hello}}
 	{{#if lecturerCheck}}
 		<h1>Lecturer</h1>
@@ -78,20 +131,42 @@
 </template>
 
 <template name="quizQuestions">
-	{{> hello}}
-	<h1 style="margin-left: 40px;">New Assignment</h1><br>
-	<form style="margin-left: 40px;" name="quiz">
-		<p style="display: inline">Module Code:</p>
-		<input style="display: inline" type="text" id="module_id" placeholder="Enter Module Code here"><br><br>
-		<p style="display: inline">Lecture Number:</p>
-		<input style="display: inline" type="text" id="lecture_id" placeholder="Enter Lecture number here"><br><br>
-		<p style="display: inline">ALE Number:</p>
-		<input style="display: inline" type="text" id="assignment_id" placeholder="Enter Assignment number here"><br><br>
-		<div id="quiz"></div>
-		<button id="add_mcq_question">Add MCQ Question</button>
-		<button id="add_short_question">Add Short Answer Question</button><br><br>
-		<button id="save_assignment">Save Assignment</button>
-	</form>
+	<div class="quizQuestions">
+		{{> hello}}<br><br><br>
+		<h1>New Assignment</h1><br>
+		<form name="quiz">
+			<div class="col-md-12">
+				<p class="col-md-6" style="display: inline">Module Code:</p>
+				<div class="col-md-4">
+					<input style="display: inline" type="text" id="module_id" class="form-control" placeholder="Enter Module Code here">
+				</div>
+			</div><br><br>
+			<div class="col-md-12">
+				<p class="col-md-6">Lecture Number:</p>
+				<div class="col-md-4">
+					<input style="display: inline" type="text" id="lecture_id" class="form-control" placeholder="Enter Lecture number here">
+				</div>
+			</div><br><br>
+			<div class="col-md-12">
+				<p class="col-md-6" style="display: inline">ALE Number:</p>
+				<div class="col-md-4">
+					<input style="display: inline" type="text" id="assignment_id" class="form-control" placeholder="Enter Assignment number here">
+				</div>
+			</div><br><br>
+			<div id="quiz"></div>
+			<p class="col-md-12">
+				<div class="col-md-1"></div>
+				<button class="btn btn-warning col-md-4" id="add_mcq_question">Add MCQ Question</button>
+				<div class="col-md-2"></div>
+				<button class="btn btn-warning col-md-4" id="add_short_question">Add Short Answer Question</button>
+				<div class="col-md-1"></div>
+			</p>
+			<p class="col-md-12">
+				<div class="col-md-4"></div>
+				<button class="btn btn-success col-md-4" id="save_assignment">Save Assignment</button>
+			</p>
+		</form>
+	</div>
 </template>
 
 <template name="editQuiz">
