@@ -9,7 +9,7 @@ if (Meteor.isServer) {
   Meteor.methods({
     saveAssignment: function(id, data) {
       Assignments.insert({
-      	_id: id,
+        _id: id,
         data: data
       });
     },
