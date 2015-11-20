@@ -195,6 +195,34 @@ header {
     -o-background-size: cover;
 }
 
+.editQuiz {
+    position: relative;
+    width: 100%;
+    min-height: auto;
+    text-align: center;
+    color: #fff;
+    background-image: linear-gradient(to bottom, #315481, #918e82 100%);
+    background-position: center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+}
+
+.modelAnswers {
+    position: relative;
+    width: 100%;
+    min-height: auto;
+    text-align: center;
+    color: #fff;
+    background-image: linear-gradient(to bottom, #315481, #918e82 100%);
+    background-position: center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+}
+
 header .header-content {
     position: relative;
     width: 100%;
@@ -249,6 +277,14 @@ header .header-content .header-content-inner p {
 
     .quizQuestions {
     	min-height: 100%;
+    }
+
+    .editQuiz {
+        min-height: 100%;
+    }
+
+    .modelAnswers {
+        min-height: 100%;
     }
 }
 

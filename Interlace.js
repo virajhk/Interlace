@@ -6,6 +6,7 @@ Router.route('/', function () {
 Router.route('/quizQuestions');
 Router.route('/editQuiz');
 Router.route('/releaseQuiz');
+Router.route('/modelAnswers');
 
 Assignments = new Mongo.Collection("assignments");
 
@@ -70,7 +71,11 @@ if (Meteor.isClient) {
     'click #releaseQuiz': function(e) {
       e.preventDefault();
       window.location = 'releaseQuiz';
-    }
+    },
+    'click #getModelAnswers': function(e) {
+      e.preventDefault();
+      window.location = 'modelAnswers';
+    },
   });
 
   Template.hello.events({
@@ -378,7 +383,15 @@ Template.editQuiz.events({
 
 Template.editQuiz.helpers({});
 
-Template.releaseQuiz.events({
+Template.modelAnswers.events({
+    'click #get_model_answers': function (e) {
+      e.preventDefault();
+      var id = document.getElementById('module_id_model').value + '_' + document.getElementById('lecture_id_model').value + '_' + document.getElementById('assignment_id_model').value;
+      Meteor.call('modelAnswerFile', id);
+    }
+});
+
+/*Template.releaseQuiz.events({
     'click #release_ale': function (e) {
       e.preventDefault();
       var id = document.getElementById('module_id_release').value + '_' + document.getElementById('lecture_id_release').value + '_' + document.getElementById('assignment_id_release').value;
@@ -390,7 +403,7 @@ Template.releaseQuiz.events({
       var allALEs = Assignments.find().fetch();
       console.log(allALEs);
     }
-});
+});*/
 
   if (getCookie('token') != '') {
     Session.set('logincheck', true);

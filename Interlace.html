@@ -105,7 +105,8 @@
 
 	<button class="btn btn-default" id="createQuiz">Create Quiz</button>
 	<button class="btn btn-default" id="editQuiz">Edit Quiz</button>
-	<button class="btn btn-default" id="releaseQuiz">Release Quiz</button>
+	<button class="btn btn-default" id="getModelAnswers">Get Model Answers</button>
+	<!--<button class="btn btn-default" id="releaseQuiz">Release Quiz</button>-->
 </template>
 
 <template name="mcq_single">
@@ -156,9 +157,9 @@
 			<div id="quiz"></div>
 			<p class="col-md-12">
 				<div class="col-md-1"></div>
-				<button class="btn btn-warning col-md-4" id="add_mcq_question">Add MCQ Question</button>
+				<button class="btn btn-primary col-md-4" id="add_mcq_question">Add MCQ Question</button>
 				<div class="col-md-2"></div>
-				<button class="btn btn-warning col-md-4" id="add_short_question">Add Short Answer Question</button>
+				<button class="btn btn-primary col-md-4" id="add_short_question">Add Short Answer Question</button>
 				<div class="col-md-1"></div>
 			</p>
 			<p class="col-md-12">
@@ -170,27 +171,46 @@
 </template>
 
 <template name="editQuiz">
-	{{> hello}}
-	<h1 style="margin-left: 40px;">Edit ALE</h1>
-	<h3 style="margin-left: 40px;">Please enter the module code, lecture number and ALE number to be edited.</h3><br>
-	<form style="margin-left: 40px;" name="quiz">
-		<p style="display: inline">Module Code:</p>
-		<input style="display: inline" type="text" id="module_id_get" placeholder="Enter Module Code here"><br><br>
-		<p style="display: inline">Lecture Number:</p>
-		<input style="display: inline" type="text" id="lecture_id_get" placeholder="Enter Lecture number here"><br><br>
-		<p style="display: inline">ALE Number:</p>
-		<input style="display: inline" type="text" id="assignment_id_get" placeholder="Enter Assignment number here"><br><br>
-		<button id="retrieve_ale">Retrieve ALE</button><br><br>
-		<div id="quiz_retrieved"></div>
-		<button id="add_mcq_question">Add MCQ Question</button>
-		<button id="add_short_question">Add Short Answer Question</button><br><br>
-		<button id="save_assignment">Save Assignment</button>
-	</form>
+	<div class="editQuiz">
+		{{> hello}}<br><br><br>
+		<h1 style="margin-left: 40px;">Edit ALE</h1>
+		<h3 style="margin-left: 40px;">Please enter the module code, lecture number and ALE number to be edited.</h3><br>
+		<form style="margin-left: 40px;" name="quiz">
+			<p style="display: inline">Module Code:</p>
+			<input style="display: inline" type="text" id="module_id_get" placeholder="Enter Module Code here"><br><br>
+			<p style="display: inline">Lecture Number:</p>
+			<input style="display: inline" type="text" id="lecture_id_get" placeholder="Enter Lecture number here"><br><br>
+			<p style="display: inline">ALE Number:</p>
+			<input style="display: inline" type="text" id="assignment_id_get" placeholder="Enter Assignment number here"><br><br>
+			<button id="retrieve_ale">Retrieve ALE</button><br><br>
+			<div id="quiz_retrieved"></div>
+			<button id="add_mcq_question">Add MCQ Question</button>
+			<button id="add_short_question">Add Short Answer Question</button><br><br>
+			<button id="save_assignment">Save Assignment</button>
+		</form>
+	</div>
 </template>
 
-<template name="releaseQuiz">
+<template name="modelAnswers">
+	<div class="modelAnswers">
+		{{> hello}}<br><br><br>
+		<h1 style="margin-left: 40px;">Get Model Answers File</h1>
+		<h3 style="margin-left: 40px;">Please enter the module code, lecture number and ALE number to be edited.</h3><br>
+		<form style="margin-left: 40px;" name="quiz">
+			<p style="display: inline">Module Code:</p>
+			<input style="display: inline" type="text" id="module_id_model" placeholder="Enter Module Code here"><br><br>
+			<p style="display: inline">Lecture Number:</p>
+			<input style="display: inline" type="text" id="lecture_id_model" placeholder="Enter Lecture number here"><br><br>
+			<p style="display: inline">ALE Number:</p>
+			<input style="display: inline" type="text" id="assignment_id_model" placeholder="Enter Assignment number here"><br><br>
+			<button id="get_model_answers">Get Model Answers File</button>
+		</form>
+	</div>
+</template>
+
+<!--<template name="releaseQuiz">
 	{{> hello}}
-	<!--<h1 style="margin-left: 40px;">Edit ALE</h1>
+	<h1 style="margin-left: 40px;">Edit ALE</h1>
 	<h3 style="margin-left: 40px;">Please enter the module code, lecture number and ALE number to be edited.</h3><br>
 	<form style="margin-left: 40px;" name="quiz">
 		<p style="display: inline">Module Code:</p>
@@ -200,9 +220,9 @@
 		<p style="display: inline">ALE Number:</p>
 		<input style="display: inline" type="text" id="assignment_id_release" placeholder="Enter Assignment number here"><br><br>
 		<button id="release_ale">Release ALE</button><br><br>
-	</form>-->
+	</form>
 
 	<button id="getALE">Get All ALEs</button>
 	<div id="allALE">
 	</div>
-</template>
+</template>-->
