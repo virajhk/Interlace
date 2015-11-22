@@ -8,11 +8,9 @@ if (Meteor.isServer) {
 		return Assignments.find({});
 	});
 
-    fs.writeFile('C:/Users/Gaurav/backend/test.txt', write, function(err){
-      if(err)
-        throw err;
-      console.log("Done");
-    }
+  Meteor.publish('getAnswers', function(){
+    return Answers.find({});
+  });
 
   Meteor.methods({
     saveAssignment: function(id, data) {
