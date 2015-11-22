@@ -9,3 +9,5 @@ insecure
 twbs:bootstrap
 iron:router
 d3js:d3
+cfs:standard-packages
+cfs:filesystem
