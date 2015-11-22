@@ -338,3 +338,23 @@ background-color: rgb(72, 168, 67);
 	margin-bottom: 50px;
 	background-color: rgb(206, 60, 62);
 }
+
+.d3board {
+    display: inline;
+    font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.bar {
+  fill: steelblue;
+}
+
+.x.axis path {
+  display: none;
+}
