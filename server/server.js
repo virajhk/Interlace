@@ -8,12 +8,6 @@ if (Meteor.isServer) {
 		return Assignments.find({});
 	});
 
-    fs.writeFile('C:/Users/Gaurav/backend/test.txt', write, function(err){
-      if(err)
-        throw err;
-      console.log("Done");
-    }
-
   Meteor.methods({
     saveAssignment: function(id, data) {
       Assignments.insert({
@@ -28,8 +22,70 @@ if (Meteor.isServer) {
       createFile(id);
     }
   });
-}
 
-function createFile(id) {
+  function createFile(id) {
+  var exists = Assignments.find({_id: id}).fetch();
+  var data = exists[0].data;
+  console.log(data);
+  var write = 'Module:';
+  var module = data.module_id;
+  write += module;
+  write += '\r\n';
+  write += 'Lecture:';
+  var lecture = data.lecture_id;
+  write += lecture;
+  write += '\r\n';
+  write += 'Assignment:';
+  var assignment_no = data.assignment_id;
+  write += assignment_no;
+  write += '\r\n';
+  write += '\r\n';
+  var qn = data.questions;
+
+  for(var i=0; i<qn.length;i++)    
+  {
+      var qn_temp = qn[i];
+
+      if(qn_temp.type == 'short_answer')
+      { 
+        write+= 'Question:';
+        write+= qn_temp.question;
+        write+= '\r\n';
+        write+= 'Answer:';
+        write+= qn_temp.answer;
+        write+= '\r\n';
+        console.log(write);
+      }
+
+      if(qn_temp.type == 'MCQ')
+      { 
+        write+= 'Question:';
+        write+= qn_temp.question;
+        write+= '\r\n';
+        for(var i=0; i<qn_temp.answer.length; i++)
+        {
+          var answerVal = qn_temp.answer[i];
+          if(answerVal.answer = '1')
+          {
+            write+= 'Answer:';
+            write+= answerVal.optionValue; ;
+          }
+          
+        }
+        write+= '\r\n';
+        console.log(write);
+      }
+      
+  }
   console.log("Entered here");
+
+  var filepath = 'C://Users//Public/Downloads/' + 'model_answers_' + data.module_id + '_' + data.lecture_id + data.assignment_id + '.txt';
+
+  fs.writeFile(filepath, write, function(err){
+      if(err)
+        throw err;
+      console.log("Done");
+    })
+  }
+
 }
