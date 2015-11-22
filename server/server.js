@@ -65,10 +65,15 @@ if (Meteor.isServer) {
         for(var i=0; i<qn_temp.answer.length; i++)
         {
           var answerVal = qn_temp.answer[i];
-          if(answerVal.answer = '1')
+          if(answerVal.answer == 1)
           {
             write+= 'Answer:';
-            write+= answerVal.optionValue; ;
+            write+= answerVal.optionValue;
+          }
+
+          else
+          {
+            console.log('wrong answer');
           }
           
         }
