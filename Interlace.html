@@ -90,25 +90,31 @@
                 <h1>The newest collaborative learning platform</h1>
                 <hr>
                 <p>Interlace is designed to facilitate in-class collaboration learning through various activities, quizzes and discussions.</p>
-                <a href="#about" class="btn btn-primary btn-xl page-scroll">Find Out More</a>
+                <a href="#about" class="btn btn-primary btn-xl page-scroll">Find Out More</a><br><br>
+                {{#if lecturerCheck}}
+					<h1 hidden>Lecturer</h1><br><br>
+				{{else}}
+					{{#if studentCheck}}
+						<h1 hidden>Student</h1><br><br>
+					{{/if}}
+				{{/if}}
+				<div class="col-md-12">
+					<p class="col-md-1" style="margin-right:55px;"></p>
+					<button class="btn btn-default col-md-4" id="createQuiz">Create Quiz</button>
+					<p class="col-md-1"></p>
+					<button class="btn btn-default col-md-4" id="editQuiz">Edit Quiz</button>
+				</div>
+				<div class="col-md-12">
+					<p class="col-md-1" style="margin-right:55px;"></p>
+					<button class="btn btn-default col-md-4" id="getModelAnswers">Get Model Answers</button>
+					<p class="col-md-1"></p>
+					<button class="btn btn-default col-md-4" id="getAnalysis">Get Answer Analysis</button>
+				</div><br><br>
             </div>
         </div>
     </header>
 	{{> hello}}
-	{{#if lecturerCheck}}
-		<h1>Lecturer</h1>
-	{{else}}
-		{{#if studentCheck}}
-			<h1>Student</h1>
-		{{/if}}
-	{{/if}}
-
-	<button class="btn btn-default" id="createQuiz">Create Quiz</button>
-	<button class="btn btn-default" id="editQuiz">Edit Quiz</button>
-	<button class="btn btn-default" id="getModelAnswers">Get Model Answers</button><br><br>
 	<!--<button class="btn btn-default" id="releaseQuiz">Release Quiz</button>-->
-
-	{{> d3vis}}
 </template>
 
 <template name="mcq_single">
@@ -206,40 +212,115 @@
 </template>
 
 <template name="editQuiz">
-	<div class="editQuiz">
+	<div class="editQuiz row">
 		{{> hello}}<br><br><br>
 		<h1 style="margin-left: 40px;">Edit ALE</h1>
 		<h3 style="margin-left: 40px;">Please enter the module code, lecture number and ALE number to be edited.</h3><br>
-		<form style="margin-left: 40px;" name="quiz">
-			<p style="display: inline">Module Code:</p>
-			<input style="display: inline" type="text" id="module_id_get" placeholder="Enter Module Code here"><br><br>
-			<p style="display: inline">Lecture Number:</p>
-			<input style="display: inline" type="text" id="lecture_id_get" placeholder="Enter Lecture number here"><br><br>
-			<p style="display: inline">ALE Number:</p>
-			<input style="display: inline" type="text" id="assignment_id_get" placeholder="Enter Assignment number here"><br><br>
-			<button id="retrieve_ale">Retrieve ALE</button><br><br>
+		<form name="quiz">
+			<div class="col-md-12">
+				<p class="col-md-6" style="display: inline">Module Code:</p>
+				<div class="col-md-4">
+					<input style="display: inline" type="text" id="module_id_get" class="form-control" placeholder="Enter Module Code here">
+				</div><br><br>
+			</div>
+			<div class="col-md-12">
+				<p class="col-md-6" style="display: inline">Lecture Number:</p>
+				<div class="col-md-4">
+					<input style="display: inline" type="text" id="lecture_id_get" class="form-control" placeholder="Enter Lecture number here">
+				</div><br><br>
+			</div>
+			<div class="col-md-12">
+				<p class="col-md-6" style="display: inline">ALE Number:</p>
+				<div class="col-md-4">
+					<input style="display: inline" type="text" id="assignment_id_get" class="form-control" placeholder="Enter Assignment number here">
+				</div><br><br>
+			</div>
+			<p class="col-md-12">
+				<br>
+				<button class="btn btn-primary col-md-4 col-md-offset-4" id="retrieve_ale">Retrieve ALE</button>
+			</p><br><br>
 			<div id="quiz_retrieved"></div>
-			<button id="add_mcq_question">Add MCQ Question</button>
-			<button id="add_short_question">Add Short Answer Question</button><br><br>
-			<button id="save_assignment">Save Assignment</button>
+			<p class="col-md-12">
+				<div class="col-md-1"></div>
+				<button class="btn btn-primary col-md-4" id="add_mcq_question">Add MCQ Question</button>
+				<div class="col-md-2"></div>
+				<button class="btn btn-primary col-md-4" id="add_short_question">Add Short Answer Question</button>
+				<div class="col-md-1"></div>
+			</p>
+			<p class="col-md-12">
+				<div class="col-md-4"></div>
+				<button class="btn btn-success col-md-4" id="save_assignment">Save Assignment</button>
+			</p>
 		</form>
 	</div>
 </template>
 
 <template name="modelAnswers">
-	<div class="modelAnswers">
+	<div class="modelAnswers row">
 		{{> hello}}<br><br><br>
 		<h1 style="margin-left: 40px;">Get Model Answers File</h1>
-		<h3 style="margin-left: 40px;">Please enter the module code, lecture number and ALE number to be edited.</h3><br>
-		<form style="margin-left: 40px;" name="quiz">
-			<p style="display: inline">Module Code:</p>
-			<input style="display: inline" type="text" id="module_id_model" placeholder="Enter Module Code here"><br><br>
-			<p style="display: inline">Lecture Number:</p>
-			<input style="display: inline" type="text" id="lecture_id_model" placeholder="Enter Lecture number here"><br><br>
-			<p style="display: inline">ALE Number:</p>
-			<input style="display: inline" type="text" id="assignment_id_model" placeholder="Enter Assignment number here"><br><br>
-			<button id="get_model_answers">Get Model Answers File</button>
+		<h3 style="margin-left: 40px;">Please enter the module code, lecture number and ALE number.</h3><br>
+		<form name="quiz">
+			<div class="col-md-12">
+				<p class="col-md-6" style="display: inline">Module Code:</p>
+				<div class="col-md-4">
+					<input style="display: inline" type="text" id="module_id_model" class="form-control" placeholder="Enter Module Code here">
+				</div><br><br>
+			</div>
+			<div class="col-md-12">
+				<p class="col-md-6" style="display: inline">Lecture Number:</p>
+				<div class="col-md-4">
+					<input style="display: inline" type="text" id="lecture_id_model" class="form-control" placeholder="Enter Lecture number here">
+				</div><br><br>
+			</div>
+			<div class="col-md-12">
+				<p class="col-md-6" style="display: inline">ALE Number:</p>
+				<div class="col-md-4">
+					<input style="display: inline" type="text" id="assignment_id_model" class="form-control" placeholder="Enter Assignment number here">
+				</div><br><br>
+			</div>
+			<p class="col-md-12">
+				<div class="col-md-4"></div>
+				<button class="btn btn-primary col-md-4" id="get_model_answers">Get Model Answers File</button>
+			</p>
 		</form>
+	</div>
+</template>
+
+<template name="answerAnalysis">
+	<div class="answerAnalysis row">
+		{{> hello}}<br><br><br>
+		<h1 style="margin-left: 40px;">Get Model Answers File</h1>
+		<h3 style="margin-left: 40px;">Please enter the module code, lecture number and ALE number.</h3><br>
+		<form name="quiz">
+			<div class="col-md-12">
+				<p class="col-md-6" style="display: inline">Module Code:</p>
+				<div class="col-md-4">
+					<input style="display: inline" type="text" id="module_id_analysis" class="form-control" placeholder="Enter Module Code here">
+				</div><br><br>
+			</div>
+			<div class="col-md-12">
+				<p class="col-md-6" style="display: inline">Lecture Number:</p>
+				<div class="col-md-4">
+					<input style="display: inline" type="text" id="lecture_id_analysis" class="form-control" placeholder="Enter Lecture number here">
+				</div><br><br>
+			</div>
+			<div class="col-md-12">
+				<p class="col-md-6" style="display: inline">ALE Number:</p>
+				<div class="col-md-4">
+					<input style="display: inline" type="text" id="assignment_id_analysis" class="form-control" placeholder="Enter Assignment number here">
+				</div><br><br>
+			</div>
+			<p class="col-md-12">
+				<div class="col-md-4"></div>
+				<button class="btn btn-primary col-md-4" id="get_answer_analysis">Get Answer Analysis</button>
+			</p><br><br>
+		</form>
+		<div class="col-md-12" id="analysisTable" style="display:none;">
+		<br><br>
+			<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false">
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -265,5 +346,29 @@
 <template name="d3vis">
   <div class="d3board" height="150px" width="600px">
     <svg id="d3vis"></svg>
+  </div>
+  <p class="pBlack">Model Answer: {{model_answer}}</p>
+</template>
+
+<template name="notice">
+  <div id="notice">
+    <h5>COMING SOON!</h5>
+  </div>
+  <p class="pBlack">Model Answer: {{model_answer}}</p>
+</template>
+
+<template name="addAccordionField">
+  <div class="panel panel-default col-md-8 col-md-offset-2">
+    <div class="panel-heading" role="tab" id="{{heading}}">
+      <h4 class="panel-title">
+        <a class="click" id="{{click_question}}" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{collapse}}" aria-expanded="false" aria-controls="{{collapse}}">
+          Question {{question_number}}
+        </a>
+      </h4>
+    </div>
+    <div id="{{second_collapse}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="{{second_heading}}">
+      <div id="{{body_question}}" class="panel-body">
+      </div>
+    </div>
   </div>
 </template>

@@ -40,10 +40,18 @@ h6 {
     font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
 }
 
+h5 {
+    color: black;
+}
+
 p {
     margin-bottom: 20px;
     font-size: 16px;
     line-height: 1.5;
+}
+
+.pBlack {
+    color: black;
 }
 
 .bg-primary {
@@ -223,6 +231,20 @@ header {
     -o-background-size: cover;
 }
 
+.answerAnalysis {
+    position: relative;
+    width: 100%;
+    min-height: auto;
+    text-align: center;
+    color: #fff;
+    background-image: linear-gradient(to bottom, #315481, #918e82 100%);
+    background-position: center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+}
+
 header .header-content {
     position: relative;
     width: 100%;
@@ -265,7 +287,7 @@ header .header-content .header-content-inner p {
     header .header-content .header-content-inner {
         margin-right: auto;
         margin-left: auto;
-        max-width: 1000px;
+        max-width: 100%;
     }
 
     header .header-content .header-content-inner p {
@@ -284,6 +306,10 @@ header .header-content .header-content-inner p {
     }
 
     .modelAnswers {
+        min-height: 100%;
+    }
+
+    .answerAnalysis {
         min-height: 100%;
     }
 }

@@ -8,13 +8,14 @@ Router.route('/editQuiz');
 Router.route('/releaseQuiz');
 Router.route('/modelAnswers');
 Router.route('/d3vis');
+Router.route('/answerAnalysis');
 
 Assignments = new Mongo.Collection("assignments");
-Players = new Meteor.Collection("players");
 Answers = new Meteor.Collection("answers");
 
 if (Meteor.isClient) {
   Meteor.subscribe('getAssignment');
+  Meteor.subscribe('getAnswers');
 
   Session.set('lecturer', false);
 
@@ -31,11 +32,15 @@ if (Meteor.isClient) {
   var Token = "";
 
   var question_id = 0;
+  var analysis_question = 0;
   var latest;
+  var curr_question;
+  var graph_module, graph_lecture, graph_assignment;
 
   var mcqOptionsArray = [];
   var questionArray = [];
   var answerArray = [];
+  var mcqQuestions = [];
 
   //check query string for search token
   if (search.token && search.token.length > 0 && search.token != 'undefined') {
@@ -79,6 +84,10 @@ if (Meteor.isClient) {
       e.preventDefault();
       window.location = 'modelAnswers';
     },
+    'click #getAnalysis': function(e) {
+      e.preventDefault();
+      window.location = 'answerAnalysis';
+    }
   });
 
   Template.hello.events({
@@ -394,6 +403,134 @@ Template.modelAnswers.events({
     }
 });
 
+Template.answerAnalysis.events({
+    'click #get_answer_analysis': function (e) {
+      e.preventDefault();
+      if (document.getElementById('module_id_analysis').value != '' && document.getElementById('lecture_id_analysis').value != '' && document.getElementById('assignment_id_analysis').value != '') {
+        document.getElementById('analysisTable').style.display = "block";
+      }
+      var id = document.getElementById('module_id_analysis').value + '_' + document.getElementById('lecture_id_analysis').value + '_' + document.getElementById('assignment_id_analysis').value;
+      assignment = Assignments.find({_id:id}).fetch();
+
+      graph_module = document.getElementById('module_id_analysis').value;
+      graph_lecture = document.getElementById('lecture_id_analysis').value;
+      graph_assignment = document.getElementById('assignment_id_analysis').value;
+
+      for (var i=0; i<assignment[0].data.questions.length; i++) {
+        Blaze.renderWithData(Template.addAccordionField, {my: "data"}, $("#accordion")[0]);
+      }
+
+      var answers = Answers.find({module_code:graph_module, lecture_id:graph_lecture, assignment_id:graph_assignment}).fetch();
+      var questionFound = 0;
+      for (var i=0; i<answers.length; i++) {
+        if (answers[i].type == "MCQ") {
+          if (mcqQuestions.length == 0)
+            mcqQuestions.push(answers[i].question_id);
+          else {
+            for (var j=0; j<answers.length; j++) {
+              if (answers[i].question_id == mcqQuestions[j]) {
+                questionFound = 1;
+                break;
+              }
+            }
+            if (questionFound == 0) {
+              mcqQuestions.push(answers[i].question_id);
+            }
+          }
+        }
+        questionFound = 0;
+      }
+    }
+});
+
+Template.addAccordionField.events({
+  'click .click' :function (e) {
+    e.preventDefault();
+    var id = "#body" + e.currentTarget.id;
+    curr_question = wordsToNumber(e.currentTarget.id);
+    if (assignment[0].data.questions[curr_question-1].type == "MCQ") {
+      for (var i=0; i<assignment[0].data.questions[curr_question-1].answer.length; i++) {
+        if (assignment[0].data.questions[curr_question-1].answer[i].answer == 1) {
+          model_answer = "Option " + (i+1).toString();
+          break;
+        }
+      }
+    } else {
+      model_answer = assignment[0].data.questions[curr_question-1].answer;
+    }
+    var questionFound = 0;
+    for (var i=0; i<mcqQuestions.length; i++) {
+      if (curr_question-1 == mcqQuestions[i]) {
+        questionFound = 1;
+        break;
+      }
+    }
+    if (e.currentTarget.attributes[6].nodeValue == "false") {
+      if (questionFound == 1) {
+        var element = document.getElementById("d3vis");
+        if (element != undefined || element != null) {
+          element.parentNode.removeChild(element);
+        }
+        Blaze.renderWithData(Template.d3vis, {my: "data"}, $(id)[0]);
+      } else {
+        var element = document.getElementById("notice");
+        if (element != undefined || element != null) {
+          element.parentNode.removeChild(element);
+        }
+        Blaze.renderWithData(Template.notice, {my: "data"}, $(id)[0]);
+      }
+    }
+    else {
+      var element = document.getElementById("d3vis");
+      if (element != undefined || element != null) {
+        element.parentNode.removeChild(element);
+      }
+      element = document.getElementById("notice");
+      if (element != undefined || element != null) {
+        element.parentNode.removeChild(element);
+      }
+    }
+  }
+});
+
+Template.addAccordionField.helpers({
+  question_number: function() {
+    analysis_question = analysis_question + 1;
+    return analysis_question;
+  },
+  heading: function() {
+    return "heading" + numberToWords(analysis_question+1);
+  },
+  collapse: function() {
+    return "collapse" + numberToWords(analysis_question+1);
+  },
+  second_heading: function() {
+    return "heading" + numberToWords(analysis_question);
+  },
+  second_collapse: function() {
+    return "collapse" + numberToWords(analysis_question);
+  },
+  body_question: function(){
+    return "body" + numberToWords(analysis_question);
+  },
+  click_question: function(){
+    return numberToWords(analysis_question+1);
+  }
+});
+
+Template.d3vis.helpers({
+  'model_answer': function() {
+    return model_answer;
+  }
+});
+
+Template.notice.helpers({
+  'model_answer': function() {
+    console.log(model_answer)
+    return model_answer;
+  }
+});
+
 /*Template.releaseQuiz.events({
     'click #release_ale': function (e) {
       e.preventDefault();
@@ -408,20 +545,9 @@ Template.modelAnswers.events({
     }
 });*/
 
-Template.d3vis.created = function () {
+Template.d3vis.onRendered(function () {
 
-  /*var names = ["Ada Lovelace",
-                   "Grace Hopper",
-                   "Marie Curie",
-                   "Carl Friedrich Gauss",
-                   "Nikola Tesla",
-                   "Claude Shannon"];
-  if (Players.find().count() === 0) {
-    for (var i = 0; i < names.length; i++)
-      Players.insert({name: names[i], score: Math.floor(Math.random()*10)*5});
-  }*/
-
-  //Answers.insert({module_code:'1', lecture_id:'1', assignment_id:'1', type:"short_answer", question_id:1, answer_content:"a", student_id:'A0105903N'});
+  //Answers.insert({module_code:'1', lecture_id:'1', assignment_id:'1', type:"MCQ", question_id:0, answer_content:3, student_id:'A0105278A'});
     // Defer to make sure we manipulate DOM
     _.defer(function () {
       // Use this as a global variable 
@@ -450,20 +576,42 @@ Template.d3vis.created = function () {
               .attr("transform", "translate(" + window.d3vis.margin.left + "," + window.d3vis.margin.top + ")");
         }
 
-        // Get the colors based on the sorted names
-        names = Players.find({}, {sort: {name: 1}}).fetch()
-        window.d3vis.color.domain(names.map(function(d) { return d.name}));
+        answers = Answers.find({}).fetch();
+        var answersToShow = [];
+        var currQuestion = curr_question-1;
+        var module_code = graph_module;
+        var lecture_id = graph_lecture;
+        var assignment_id = graph_assignment;
 
-        // Get the players
-        players = Players.find({}, {sort: {score: -1, name: 1}}).fetch()
-        window.d3vis.x.domain(players.map(function(d) { return d.name}));
-        window.d3vis.y.domain([0, d3.max(players, function(d) { return d.score; })]);
+        for (var i=0; i<4; i++) {
+          answersToShow[i] = {};
+          answersToShow[i].option = i;
+          answersToShow[i].value = 0;
+        }
 
-        // Two selectors (this could be streamlined...)
+        for (var i=0; i<answers.length; i++) {
+          if (answers[i].type == "MCQ" && answers[i].question_id == currQuestion && module_code == answers[i].module_code && lecture_id == answers[i].lecture_id && assignment_id == answers[i].assignment_id) {
+            if (answers[i].answer_content == 1)
+              answersToShow[0].value++;
+            else if (answers[i].answer_content == 2)
+              answersToShow[1].value++;
+            else if (answers[i].answer_content == 3)
+              answersToShow[2].value++;
+            else if (answers[i].answer_content == 4)
+              answersToShow[3].value++;
+          }
+        }
+        console.log(answersToShow);
+
+        window.d3vis.color.domain(answersToShow.map(function(d) { return d.option}));
+
+        window.d3vis.x.domain(answersToShow.map(function(d) { return d.option}));
+        window.d3vis.y.domain([0, d3.max(answersToShow, function(d) { return d.value; })]);
+
         var bar_selector = window.d3vis.svg.selectAll(".bar")
-          .data(players, function (d) {return d.name})
+          .data(answersToShow, function (d) {return d.option})
         var text_selector = window.d3vis.svg.selectAll(".bar_text")
-          .data(players, function (d) {return d.name})
+          .data(answersToShow, function (d) {return d.option})
 
         bar_selector
           .enter().append("rect")
@@ -471,11 +619,11 @@ Template.d3vis.created = function () {
         bar_selector
           .transition()
           .duration(100)
-          .attr("x", function(d) { return window.d3vis.x(d.name);})
+          .attr("x", function(d) { return window.d3vis.x(d.option);})
           .attr("width", window.d3vis.x.rangeBand())
-          .attr("y", function(d) { return window.d3vis.y(d.score); })
-          .attr("height", function(d) { return window.d3vis.height - window.d3vis.y(d.score); })
-          .style("fill", function(d) { return window.d3vis.color(d.name);})
+          .attr("y", function(d) { return window.d3vis.y(d.value); })
+          .attr("height", function(d) { return window.d3vis.height - window.d3vis.y(d.value); })
+          .style("fill", function(d) { return window.d3vis.color(d.option);})
 
         text_selector
           .enter().append("text")
@@ -484,13 +632,13 @@ Template.d3vis.created = function () {
           .transition()
           .duration(100)
           .attr()
-          .attr("x", function(d) { return window.d3vis.x(d.name) + 10;})
-          .attr("y", function(d) { return window.d3vis.y(d.score) - 2; })
-          .text(function(d) {return d.score;})
-          .attr("height", function(d) { return window.d3vis.height - window.d3vis.y(d.score); })
+          .attr("x", function(d) { return window.d3vis.x(d.option) + 10;})
+          .attr("y", function(d) { return window.d3vis.y(d.value) - 2; })
+          .text(function(d) {return d.value;})
+          .attr("height", function(d) { return window.d3vis.height - window.d3vis.y(d.value); })
       });  
     });
-  }
+  });
 
   if (getCookie('token') != '') {
     Session.set('logincheck', true);
@@ -710,4 +858,93 @@ function saveAssignment(questionArray, answerArray, mcqOptionsArray, source) {
     Meteor.call('editAssignment', id, ale);
   
   console.log(ale);
+}
+
+function numberToWords(num) {
+  var a = ['','One','Two','Three','Four', 'Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+  var b = ['', '', 'twenty','thirty','forty','fifty', 'sixty','seventy','eighty','ninety'];
+  if ((num = num.toString()).length > 9) return 'overflow';
+  n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
+  if (!n) return; var str = '';
+  str += (n[1] != 0) ? (a[Number(n[1])] || b[n[1][0]] + ' ' + a[n[1][1]]) + 'crore ' : '';
+  str += (n[2] != 0) ? (a[Number(n[2])] || b[n[2][0]] + ' ' + a[n[2][1]]) + 'lakh ' : '';
+  str += (n[3] != 0) ? (a[Number(n[3])] || b[n[3][0]] + ' ' + a[n[3][1]]) + 'thousand ' : '';
+  str += (n[4] != 0) ? (a[Number(n[4])] || b[n[4][0]] + ' ' + a[n[4][1]]) + 'hundred ' : '';
+  str += (n[5] != 0) ? ((str != '') ? 'and ' : '') + (a[Number(n[5])] || b[n[5][0]] + ' ' + a[n[5][1]]) : '';
+  return str;
+}
+
+function wordsToNumber(s) {
+  var Small = {
+    'Zero': 0,
+    'One': 1,
+    'Two': 2,
+    'Three': 3,
+    'Four': 4,
+    'Five': 5,
+    'Six': 6,
+    'Seven': 7,
+    'Eight': 8,
+    'Nine': 9,
+    'Ten': 10,
+    'Eleven': 11,
+    'Twelve': 12,
+    'Thirteen': 13,
+    'Fourteen': 14,
+    'Fifteen': 15,
+    'Sixteen': 16,
+    'Seventeen': 17,
+    'Eighteen': 18,
+    'Nineteen': 19,
+    'Twenty': 20,
+    'Thirty': 30,
+    'Forty': 40,
+    'Fifty': 50,
+    'Sixty': 60,
+    'Seventy': 70,
+    'Eighty': 80,
+    'Ninety': 90
+  };
+
+  var Magnitude = {
+      'thousand':     1000,
+      'million':      1000000,
+      'billion':      1000000000,
+      'trillion':     1000000000000,
+      'quadrillion':  1000000000000000,
+      'quintillion':  1000000000000000000,
+      'sextillion':   1000000000000000000000,
+      'septillion':   1000000000000000000000000,
+      'octillion':    1000000000000000000000000000,
+      'nonillion':    1000000000000000000000000000000,
+      'decillion':    1000000000000000000000000000000000,
+  };
+
+  var a, n, g;
+
+  a = s.toString().split(/[\s-]+/);
+  n = 0;
+  g = 0;
+  a.forEach(feach);
+  return n + g;
+
+  function feach(w) {
+      var x = Small[w];
+      if (x != null) {
+          g = g + x;
+      }
+      else if (w == "hundred") {
+          g = g * 100;
+      }
+      else {
+          x = Magnitude[w];
+          if (x != null) {
+              n = n + g * x
+              g = 0;
+          }
+          else { 
+              //alert("Unknown number: "+w); 
+          }
+      }
+  }
 }
