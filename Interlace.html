@@ -105,8 +105,10 @@
 
 	<button class="btn btn-default" id="createQuiz">Create Quiz</button>
 	<button class="btn btn-default" id="editQuiz">Edit Quiz</button>
-	<button class="btn btn-default" id="getModelAnswers">Get Model Answers</button>
+	<button class="btn btn-default" id="getModelAnswers">Get Model Answers</button><br><br>
 	<!--<button class="btn btn-default" id="releaseQuiz">Release Quiz</button>-->
+
+	{{> d3vis}}
 </template>
 
 <template name="mcq_single">
@@ -114,25 +116,57 @@
 </template>
 
 <template name="question_mcq">
-	<p style="display:inline">{{question_number}}. </p>
-	<input class="mcq_question {{question_id}}" style="display:inline" type="text" placeholder="Enter question here"><br>
-	<div id="{{question_id}}">
-		<input class="mcq_radio_1 {{question_id}} mcq_radio" type="radio" name="{{same_name}}" value="1"><input class="mcq_option {{question_id}} value1" placeholder="Enter Option 1 here"><br>
-		<input class="mcq_radio_2 {{question_id}} mcq_radio" type="radio" name="{{same_name}}" value="2"><input class="mcq_option {{question_id}} value2" placeholder="Enter Option 2 here"><br>
-		<input class="mcq_radio_3 {{question_id}} mcq_radio" type="radio" name="{{same_name}}" value="3"><input class="mcq_option {{question_id}} value3" placeholder="Enter Option 3 here"><br>
-		<input class="mcq_radio_4 {{question_id}} mcq_radio" type="radio" name="{{same_name}}" value="4"><input class="mcq_option {{question_id}} value4" placeholder="Enter Option 4 here"><br>
+	<br>
+	<div class="row">
+		<p style="display:inline" class="col-md-1 col-md-offset-3">{{question_number}}. </p>
+		<div class="col-md-5">
+			<input class="mcq_question {{question_id}} form-control" style="display:inline" type="text" placeholder="Enter MCQ question here">
+		</div>
+		<div id="{{question_id}}" class="col-md-12">
+			<div class="col-md-offset-3">
+				<input class="mcq_radio_1 {{question_id}} mcq_radio col-md-2" type="radio" name="{{same_name}}" value="1">
+				<div class="col-md-6">
+					<input class="mcq_option {{question_id}} value1 form-control" placeholder="Enter Option 1 here">
+				</div>
+			</div><br><br>
+			<div class="col-md-offset-3">
+				<input class="mcq_radio_2 {{question_id}} mcq_radio col-md-2" type="radio" name="{{same_name}}" value="2">
+				<div class="col-md-6">
+					<input class="mcq_option {{question_id}} value2 form-control" placeholder="Enter Option 2 here">
+				</div>
+			</div><br><br>
+			<div class="col-md-offset-3">
+				<input class="mcq_radio_3 {{question_id}} mcq_radio col-md-2" type="radio" name="{{same_name}}" value="3">
+				<div class="col-md-6">
+					<input class="mcq_option {{question_id}} value3 form-control" placeholder="Enter Option 3 here">
+				</div>
+			</div><br><br>
+			<div class="col-md-offset-3">
+				<input class="mcq_radio_4 {{question_id}} mcq_radio col-md-2" type="radio" name="{{same_name}}" value="4">
+				<div class="col-md-6">
+					<input class="mcq_option {{question_id}} value4 form-control" placeholder="Enter Option 4 here">
+				</div>
+			</div><br><br>
+		</div><br><br>
 	</div>
-	<button id="{{same_name}}" class="add_option">Add Option</button><br><br>
+	<!--<button id="{{same_name}}" class="add_option">Add Option</button><br><br>-->
 </template>
 
 <template name="question_short_answer">
-	<p style="display:inline">{{question_number}}. </p>
-	<input id="{{question_id}}" class="short_answer_question {{question_id}}" style="display:inline" type="text" placeholder="Enter question here"><br>
-	<input class="short_answer {{question_id}}" type="text" placeholder="Enter model answer here"><br><br>
+	<br>
+	<div class="row">
+		<p style="display:inline" class="col-md-1 col-md-offset-3">{{question_number}}. </p>
+		<div class="col-md-5">
+			<input id="{{question_id}}" class="short_answer_question {{question_id}} form-control" style="display:inline" type="text" placeholder="Enter short question here">
+		</div><br><br>
+		<div class="col-md-5">
+			<input class="short_answer {{question_id}} form-control" type="text" placeholder="Enter model answer here">
+		</div><br><br>
+	</div>
 </template>
 
 <template name="quizQuestions">
-	<div class="quizQuestions">
+	<div class="quizQuestions row">
 		{{> hello}}<br><br><br>
 		<h1>New Assignment</h1><br>
 		<form name="quiz">
@@ -154,6 +188,7 @@
 					<input style="display: inline" type="text" id="assignment_id" class="form-control" placeholder="Enter Assignment number here">
 				</div>
 			</div><br><br>
+			<p></p><br>
 			<div id="quiz"></div>
 			<p class="col-md-12">
 				<div class="col-md-1"></div>
