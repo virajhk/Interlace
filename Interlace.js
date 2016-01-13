@@ -12,12 +12,25 @@ Router.route('/answerAnalysis');
 
 Assignments = new Mongo.Collection("assignments");
 Answers = new Meteor.Collection("answers");
+BrowserNotifications = new Mongo.Collection("browserNotifications");
 
 if (Meteor.isClient) {
+
+  Accounts.ui.config({
+    passwordSignupFields: "USERNAME_ONLY"
+  });
+  //console.log(Meteor.userId());
+
   Meteor.subscribe('getAssignment');
   Meteor.subscribe('getAnswers');
+  Meteor.subscribe('getNotifications');
+
+  //Meteor.call('createNotification');
 
   Session.set('lecturer', false);
+  if (getCookie('firstLogin') == null) {
+    setCookie('firstLogin', true);
+  }
 
   var search = function () {
     var p = window.location.search.substr(1).split(/\&/), l = p.length, kv, r = {};
@@ -44,8 +57,8 @@ if (Meteor.isClient) {
 
   //check query string for search token
   if (search.token && search.token.length > 0 && search.token != 'undefined') {
-      Token = search.token;
-      setCookie('token', Token);
+    Token = search.token;
+    setCookie('token', Token);
   }
 
   if (getCookie('token') === '')
@@ -102,13 +115,16 @@ if (Meteor.isClient) {
       loginIVLE();
     },
     'click #home': function () {
-      window.location = "/"
+      window.location = "/";
     }
   });
 
   Template.hello.helpers({
     loginCheck: function () {
       return Session.get('logincheck');
+    },
+    firstLogin: function() {
+      return getCookie('firstLogin');
     }
   });
 
@@ -642,10 +658,38 @@ Template.d3vis.onRendered(function () {
 
   if (getCookie('token') != '') {
     Session.set('logincheck', true);
+    setCookie('firstLogin', false);
     Populate_UserName();
     //Populate_Module();
     Populate_UserId();
   }
+  window.onload = function(){
+    if (search.token && search.token.length > 0 && search.token != 'undefined') {
+      document.getElementById('login-sign-in-link').click();
+      document.getElementById('signup-link').click();
+      var userName = getCookie("userId");
+      document.getElementById('login-username').value = userName;
+    }
+
+    /* Sending notifications to students about ALE */
+    var notifications = BrowserNotifications.find({userId: Meteor.userId()}).fetch();
+    console.log(notifications);
+
+    if (Notification.permission !== "granted")
+      Notification.requestPermission();
+    else {
+      var notification = new Notification(notifications[0].title, {
+        icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
+        body: notifications[0].body,
+      });
+
+      notification.onclick = function () {
+        window.open(notifications[0].url);      
+      };
+    }
+    /* Notifications end */
+
+  };
 }
 
 function addMcqQuestion() {
@@ -690,7 +734,7 @@ function Populate_UserName() {
   var url = APIUrl + "UserName_Get?output=json&callback=?&APIKey=" + APIKey + "&Token=" + Token;
 
   jQuery.getJSON(url, function (data) {
-      document.cookie="userName="+data;
+      setCookie('userName', data);    //document.cookie="userName="+data;
       $('#lbl_Name').html(data);
   });
 }
@@ -703,7 +747,7 @@ function Populate_UserId() {
   var url = APIUrl + "UserID_Get?output=json&callback=?&APIKey=" + APIKey + "&Token=" + Token;
 
   jQuery.getJSON(url, function (data) {
-      document.cookie="userId="+data;
+      setCookie('userId', data);    //document.cookie="userId="+data;
       
       if (/^[a-zA-Z]+$/.test(data)) {
           Session.set('lecturer', true);
