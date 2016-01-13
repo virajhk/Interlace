@@ -11,3 +11,5 @@ iron:router
 d3js:d3
 cfs:standard-packages
 cfs:filesystem
+accounts-ui
+accounts-password
