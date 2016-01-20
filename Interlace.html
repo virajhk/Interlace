@@ -33,7 +33,13 @@
                     </li>
                     {{#unless firstLogin}}
 	                    {{#unless loginCheck}}
-							<li><a id="login">Sign In</a></li>
+	                    	<li class="dropdown">
+								<a lass="dropdown-toggle" data-toggle="dropdown">Sign In</a>
+								<ul class="dropdown-menu">
+									<li><a id="login">New User</a></li>
+									<li><a id="existing">Existing User</a></li>
+								</ul>
+							</li>
 						{{else}}
 							<li class="dropdown">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown" id="lbl_Name"></a>
@@ -96,6 +102,8 @@
                 <h1>The newest collaborative learning platform</h1>
                 <hr>
                 <p>Interlace is designed to facilitate in-class collaboration learning through various activities, quizzes and discussions.</p>
+                <!--<input type="file" name="fileUpload" class="myFileInput">
+                <img id="imageTest" alt="Smiley face" height="100" width="100">-->
                 <a href="#about" class="btn btn-primary btn-xl page-scroll">Find Out More</a><br><br>
                 {{#if lecturerCheck}}
 					<h1 hidden>Lecturer</h1><br><br>
@@ -133,7 +141,11 @@
 		<p style="display:inline" class="col-md-1 col-md-offset-3">{{question_number}}. </p>
 		<div class="col-md-5">
 			<input class="mcq_question {{question_id}} form-control" style="display:inline" type="text" placeholder="Enter MCQ question here">
-		</div>
+		</div><br><br>
+		<div class="col-md-5">
+			<input style="display:inline" type="file" name="fileUpload" class="mcq_myFileInput {{question_id}}">
+			<a style="display:inline" class="{{question_id}} preview" data-lightbox="{{question_id}}">Preview</a>
+		</div><br><br>
 		<div id="{{question_id}}" class="col-md-12">
 			<div class="col-md-offset-3">
 				<input class="mcq_radio_1 {{question_id}} mcq_radio col-md-2" type="radio" name="{{same_name}}" value="1">
@@ -172,6 +184,10 @@
 			<input id="{{question_id}}" class="short_answer_question {{question_id}} form-control" style="display:inline" type="text" placeholder="Enter short question here">
 		</div><br><br>
 		<div class="col-md-5">
+			<input style="display:inline" type="file" name="fileUpload" class="short_answer_myFileInput {{question_id}}">
+			<a style="display:inline" class="{{question_id}} preview" data-lightbox="{{question_id}}">Preview</a>
+		</div><br><br>
+		<div class="col-md-5 col-md-offset-4">
 			<input class="short_answer {{question_id}} form-control" type="text" placeholder="Enter model answer here">
 		</div><br><br>
 	</div>

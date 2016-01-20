@@ -14,6 +14,27 @@ Assignments = new Mongo.Collection("assignments");
 Answers = new Meteor.Collection("answers");
 BrowserNotifications = new Mongo.Collection("browserNotifications");
 
+var imageStore = new FS.Store.GridFS("images");
+
+Images = new FS.Collection("images", {
+ stores: [imageStore]
+});
+
+Images.allow({
+ insert: function(){
+  return true;
+ },
+ update: function(){
+  return true;
+ },
+ remove: function(){
+  return true;
+ },
+ download: function(){
+  return true;
+ }
+});
+
 if (Meteor.isClient) {
 
   Accounts.ui.config({
@@ -24,8 +45,9 @@ if (Meteor.isClient) {
   Meteor.subscribe('getAssignment');
   Meteor.subscribe('getAnswers');
   Meteor.subscribe('getNotifications');
+  Meteor.subscribe('images');
 
-  //Meteor.call('createNotification');
+  Meteor.call('createNotification');
 
   Session.set('lecturer', false);
   if (getCookie('firstLogin') == null) {
@@ -54,6 +76,7 @@ if (Meteor.isClient) {
   var questionArray = [];
   var answerArray = [];
   var mcqQuestions = [];
+  var imageArray = [];
 
   //check query string for search token
   if (search.token && search.token.length > 0 && search.token != 'undefined') {
@@ -65,7 +88,7 @@ if (Meteor.isClient) {
     logout();
 
   Template.firstPage.events({
-    'click #Announcement': function (e) {
+    /*'click #Announcement': function (e) {
       e.preventDefault();
       expand_box(document.getElementById('Announcement'));
     },
@@ -80,7 +103,7 @@ if (Meteor.isClient) {
     'click #Files': function (e) {
       e.preventDefault();
       expand_box(document.getElementById('Files'));
-    },
+    },*/
     'click #createQuiz': function(e) {
       e.preventDefault();
       window.location = 'quizQuestions';
@@ -100,7 +123,24 @@ if (Meteor.isClient) {
     'click #getAnalysis': function(e) {
       e.preventDefault();
       window.location = 'answerAnalysis';
-    }
+    }/*,
+    'change .myFileInput': function(event, template) {
+      var source;
+      FS.Utility.eachFile(event, function(file) {
+        Images.insert(file, function (err, fileObj) {
+          if (err){
+            // handle error
+            console.log('error');
+          } else {
+            console.log('success');
+            Meteor.setTimeout( function () { 
+              source = fileObj.url('images');
+              $("#imageTest").attr("src", source);
+            }, 3000);
+          }
+        });
+      });
+    }*/
   });
 
   Template.hello.events({
@@ -116,6 +156,10 @@ if (Meteor.isClient) {
     },
     'click #home': function () {
       window.location = "/";
+    },
+    'click #existing': function () {
+      setCookie('firstLogin', false);
+      window.location.reload(true);
     }
   });
 
@@ -149,7 +193,7 @@ if (Meteor.isClient) {
     'click #save_assignment': function (e) {
       e.preventDefault();
 
-      saveAssignment(questionArray, answerArray, mcqOptionsArray, "new");
+      saveAssignment(questionArray, answerArray, mcqOptionsArray, imageArray, "new");
     }
   });
 
@@ -266,6 +310,48 @@ if (Meteor.isClient) {
       }
 
       console.log(answerArray);
+    },
+    'change .mcq_myFileInput': function(event, template) {
+      var source;
+      FS.Utility.eachFile(event, function(file) {
+        Images.insert(file, function (err, fileObj) {
+          if (err){
+            // handle error
+            console.log('error');
+          } else {
+            console.log('success');
+            Meteor.setTimeout( function () { 
+              source = fileObj.url('images');
+
+              var classes = $(event.currentTarget).attr('class');
+              var classArray = classes.split(' ');
+
+              var targetClasses = ".preview" + "." + classArray[1];
+              console.log(source);
+              $(targetClasses).attr("href", source);
+
+              var found = 0;
+              for (var i=0; i<imageArray.length; i++) {
+                if (imageArray[i].question_number == classArray[1].substr(8, classArray[1].length)) {
+                  imageArray[i].url = source;
+                  found = 1;
+                } 
+              }
+              if (found == 0) {
+                var options = {
+                  type: 'mcq',
+                  question_number: classArray[1].substr(8, classArray[1].length),
+                  url: source
+                };
+
+                imageArray.push(options);
+              }
+
+              console.log(imageArray);
+            }, 5000);
+          }
+        });
+      });
     } 
   });
 
@@ -316,7 +402,49 @@ Template.question_short_answer.events({
       }
 
       console.log(answerArray);
-    }  
+    },
+    'change .short_answer_myFileInput': function(event, template) {
+      var source;
+      FS.Utility.eachFile(event, function(file) {
+        Images.insert(file, function (err, fileObj) {
+          if (err){
+            // handle error
+            console.log('error');
+          } else {
+            console.log('success');
+            Meteor.setTimeout( function () { 
+              source = fileObj.url('images');
+
+              var classes = $(event.currentTarget).attr('class');
+              var classArray = classes.split(' ');
+
+              var targetClasses = ".preview" + "." + classArray[1];
+              console.log(source);
+              $(targetClasses).attr("href", source);
+
+              var found = 0;
+              for (var i=0; i<imageArray.length; i++) {
+                if (imageArray[i].question_number == classArray[1].substr(8, classArray[1].length)) {
+                  imageArray[i].url = source;
+                  found = 1;
+                } 
+              }
+              if (found == 0) {
+                var options = {
+                  type: 'short_answer',
+                  question_number: classArray[1].substr(8, classArray[1].length),
+                  url: source
+                };
+
+                imageArray.push(options);
+              }
+
+              console.log(imageArray);
+            }, 5000);
+          }
+        });
+      });
+    }
 });
 
 Template.editQuiz.events({
@@ -404,7 +532,7 @@ Template.editQuiz.events({
     'click #save_assignment': function(e) {
       e.preventDefault();
       if (confirm('Are you sure you want to save the changes to the ALE?')) {
-        saveAssignment(questionArray, answerArray, mcqOptionsArray, "edit");
+        saveAssignment(questionArray, answerArray, mcqOptionsArray, imageArray, "edit");
       }
     }
 });
@@ -663,6 +791,7 @@ Template.d3vis.onRendered(function () {
     //Populate_Module();
     Populate_UserId();
   }
+
   window.onload = function(){
     if (search.token && search.token.length > 0 && search.token != 'undefined') {
       document.getElementById('login-sign-in-link').click();
@@ -670,23 +799,38 @@ Template.d3vis.onRendered(function () {
       var userName = getCookie("userId");
       document.getElementById('login-username').value = userName;
     }
+    else if (getCookie('firstLogin') == 'false' && Meteor.userId() == null) {
+      document.getElementById('login-sign-in-link').click();
+    }
 
     /* Sending notifications to students about ALE */
-    var notifications = BrowserNotifications.find({userId: Meteor.userId()}).fetch();
-    console.log(notifications);
+    setInterval(function() { 
+      var notifications = BrowserNotifications.find({userId: Meteor.userId()}).fetch();
 
-    if (Notification.permission !== "granted")
-      Notification.requestPermission();
-    else {
-      var notification = new Notification(notifications[0].title, {
-        icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
-        body: notifications[0].body,
-      });
+      //console.log(notifications);
 
-      notification.onclick = function () {
-        window.open(notifications[0].url);      
-      };
-    }
+      if (Notification.permission !== "granted")
+        Notification.requestPermission();
+      else {
+        if (notifications.length > 0) {
+          for (var i=0; i<notifications.length; i++) {
+            if (notifications[i].shown == false) {
+              var notification = new Notification(notifications[i].title, {
+                icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
+                body: notifications[i].body,
+              });
+
+              notification.onclick = function () {
+                window.open(notifications[i].url);      
+              };
+
+              Meteor.call('markNotificationAsTrue', notifications[i]._id, notifications[i].userId, notifications[i].title, notifications[i].body, notifications[i].url);
+            }
+          }
+        }
+      } 
+
+    }, 1000);
     /* Notifications end */
 
   };
@@ -812,7 +956,7 @@ function expand_box(element) {
     }
 }
 
-function saveAssignment(questionArray, answerArray, mcqOptionsArray, source) {
+function saveAssignment(questionArray, answerArray, mcqOptionsArray, imageArray, source) {
   var module;
   var lecture;
   var assignment;
@@ -881,6 +1025,16 @@ function saveAssignment(questionArray, answerArray, mcqOptionsArray, source) {
             allQuestions.push(questionObject);
             break;
           }
+        }
+      }
+
+      for (var k=0; k<imageArray.length; k++) {
+        if (question_number == imageArray[k].question_number) {
+          allQuestions[question_number-1].imageURL = imageArray[k].url;
+          break;
+        }
+        if (k == imageArray.length-1) {
+          allQuestions[question_number-1].imageURL = null;
         }
       }
     } 

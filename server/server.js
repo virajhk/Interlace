@@ -2,6 +2,12 @@
 
 if (Meteor.isServer) {
 
+  /*BrowserNotifications.sendNotification({
+    userId: 'iPiA77GynvxLJ8srf',
+    title: "www.google.com",
+    body: "www.google.com"
+  });*/
+
   var fs = Npm.require('fs');
 
 	Meteor.publish('getAssignment', function(){
@@ -10,6 +16,14 @@ if (Meteor.isServer) {
 
   Meteor.publish('getAnswers', function(){
     return Answers.find({});
+  });
+
+  Meteor.publish('getNotifications', function(){
+    return BrowserNotifications.find({});
+  });
+
+  Meteor.publish('images', function(){ 
+    return Images.find({}); 
   });
 
   Meteor.methods({
@@ -24,6 +38,18 @@ if (Meteor.isServer) {
     },
     modelAnswerFile: function(id) {
       createFile(id);
+    },
+    createNotification: function() {
+      BrowserNotifications.insert({
+        userId: 'iPiA77GynvxLJ8srf',
+        title: "www.google.com",
+        body: "www.google.com",
+        url: "editQuiz",
+        shown: false
+      });
+    },
+    markNotificationAsTrue: function(id, userId, title, body, url) {
+      BrowserNotifications.update({_id: id}, {userId: userId, title: title, body: body, url: url, shown: true});
     }
   });
 
@@ -88,7 +114,7 @@ if (Meteor.isServer) {
   }
   console.log("Entered here");
 
-  var filepath = 'C://Users//Public/Downloads/' + 'model_answers_' + data.module_id + '_' + data.lecture_id + data.assignment_id + '.txt';
+  var filepath = '/Users/Kuthia/Downloads/' + 'model_answers_' + data.module_id + '_' + data.lecture_id + data.assignment_id + '.txt';
 
   fs.writeFile(filepath, write, function(err){
       if(err)

@@ -16,6 +16,7 @@ cfs:collection-filters@0.2.4
 cfs:data-man@0.0.6
 cfs:file@0.1.17
 cfs:filesystem@0.1.2
+cfs:gridfs@0.0.33
 cfs:http-methods@0.0.30
 cfs:http-publish@0.0.13
 cfs:power-queue@0.9.11
@@ -61,6 +62,7 @@ minimongo@1.0.8
 mobile-status-bar@1.0.3
 mongo@1.1.0
 mongo-livedata@1.0.8
+mrt:lightbox2@0.0.1
 npm-bcrypt@0.7.8_2
 observe-sequence@1.0.6
 ordered-dict@1.0.3
