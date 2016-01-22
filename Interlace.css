@@ -384,3 +384,35 @@ background-color: rgb(72, 168, 67);
 .x.axis path {
   display: none;
 }
+
+
+/*Break line below Xu Chen*/
+#header {
+    background-color: black;
+    color: white;
+    text-align: center;
+    padding: 5px;
+}
+
+#activity_panel {
+    width: 550px;
+    height: 500px;
+    float: left;
+    padding: 10px;
+    margin: 10px;
+}
+
+#side_information {
+    height: 500px;
+    width: 300px;
+    float: right;
+    padding: 10px;
+    margin: 10px;
+}
+
+#group_list_panel {
+    width: 300px;
+    float: left;
+    padding: 10px;
+    margin: 10px;
+}

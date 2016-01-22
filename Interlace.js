@@ -10,6 +10,26 @@ Router.route('/modelAnswers');
 Router.route('/d3vis');
 Router.route('/answerAnalysis');
 
+// Break line
+Router.route('/', {
+  name: 'home',
+  template: 'home'
+});
+
+Router.route('/news');
+Router.route('/inclassactivity');
+Router.route('/archive');
+Router.route('/activity1');
+Router.route('/activity2');
+
+Router.configure({
+  layoutTemplate: 'main'
+});
+
+Questions = new Mongo.Collection("questions");
+Groups = new Mongo.Collection("tasks");
+// Break line
+
 Assignments = new Mongo.Collection("assignments");
 Answers = new Meteor.Collection("answers");
 BrowserNotifications = new Mongo.Collection("browserNotifications");
@@ -36,7 +56,108 @@ Images.allow({
 });
 
 if (Meteor.isClient) {
+  //Break Line
+  Session.setDefault('studentId', 'A0105522W');
+  Session.setDefault('studentName', 'Xu Chen');
+  Session.setDefault('isGroupCreator', false);
+  Session.setDefault('hasGroup', false);
+  Session.setDefault('numOfGroups', 3);
 
+  Template.StudentNameDisplay.helpers({
+    getStudentName: function () {
+      return Session.get('studentName');
+    }
+  });
+
+  Template.DateDisplay.helpers({
+    getDate: function () {
+      var date = new Date();
+      var begun = moment(date).format("DD-MMM-YYYY");
+
+      return begun;
+    }
+  });
+
+  Template.TodaySchedule.helpers({
+    getTodaySchedule: function () {
+      return "Today Schedule";
+    }
+  });
+
+  Template.Announcement.helpers({
+    getAnnouncement: function () {
+      return "Announcement";
+    }
+  });
+
+  Template.GroupListDisplay.helpers({
+    groups: function () {
+      return Groups.find({});
+    },
+    isInGroup: function () {
+      return Session.get('hasGroup');
+    }
+  });
+
+  Template.groupActive.events({
+    "click .join": function (event) {
+      event.preventDefault();
+
+      Session.set('hasGroup', true);
+    }
+  });
+
+  Template.groupDisabled.events({
+    "click .quit": function (event) {
+      event.preventDefault();
+
+      Session.set('hasGroup', false);
+    }
+  });
+
+  Template.activity2.helpers({
+    questions: function () {
+      QuestionNum = Questions.find().count();
+      return Questions.find({});
+    },
+
+    isMCQ: function (Question_type) {
+      return Question_type === "MCQ";
+    },
+
+    isShortQuestion: function (Question_type) {
+      return Question_type === "ShortQuestion";
+    }
+  });
+
+  Template.activity2.events({
+    "submit .quiz": function (event) {
+      event.preventDefault();
+
+      $('.xxx:checked').each(function() {
+        console.log($(this).val());
+      });
+
+      $('input[class="sq"], textarea').each(function(){  
+        console.log($(this).val());
+      });
+    }
+  });
+
+  Template.GroupCreate.events({
+    "click #create_group": function (event) {
+      event.preventDefault();
+      console.log("xc testing");
+
+      Session.set('numOfGroups', Session.get('numOfGroups') + 1);
+      var groupName = "Group " + Session.get('numOfGroups');
+      Groups.insert({
+        text: groupName,
+        createdAt: new Date()
+      });
+    }
+  })
+  //Break Line
   Accounts.ui.config({
     passwordSignupFields: "USERNAME_ONLY"
   });
@@ -1146,3 +1267,5 @@ function wordsToNumber(s) {
       }
   }
 }
+
+

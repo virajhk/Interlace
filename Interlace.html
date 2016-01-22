@@ -394,3 +394,180 @@
     </div>
   </div>
 </template>
+
+<!-- Break line below Xu Chen -->
+
+
+<template name="home">
+    <h4>Welcome to Interlace!</h4>
+    <h5>CS3219 Class is in progress.</h5>
+</template>
+
+<template name="main">
+	<h1>Interlace</h1>
+	{{> navigation}}
+	{{> yield}}
+	
+	<!-- <hr />
+	<p>Copyright &copy; Interlace, 2015-2016.</p> -->
+</template>
+
+<template name="navigation">
+	<ul class="nav nav-pills">
+		<li><a href="{{pathFor route='news'}}">News</a></li>
+		<li><a href="{{pathFor route='inclassactivity'}}">InClassActivity</a></li>
+		<li role="presentation" class="dropdown">
+			<a class="dropdown-toggle" data-toggle="dropdown" href="{{pathFor route='archive'}}" role="button" aria-haspopup="true" aria-expanded="false">Archive <span class="caret"></span></a>
+
+			<ul class="dropdown-menu">
+				<li><a href="#">Lecture 1</a></li>
+				<li><a href="#">Lecture 2</a></li>
+				<li><a href="#">Lecture 3</a></li>
+				<li><a href="#">Lecture 4</a></li>
+			</ul>
+		</li>
+	</ul>
+</template>
+
+<!-- Navigation template Level 1 -->
+<template name="news">
+	<div class="well">
+		{{> TodaySchedule}}
+	</div>
+	<div class="well">
+		{{> Announcement}}
+	</div>
+</template>
+
+<template name="inclassactivity">
+	<div id="activity_panel" class="well">
+		{{> ActivityDisplay}}
+	</div>
+
+	<div id="group_list_panel" class="well">
+		{{> GroupListDisplay}}
+		<br>
+		<br>
+		<br>
+		{{> GroupCreate}}
+	</div>
+
+</template>
+
+<template name="archive">
+	<h2>Archive</h2>
+</template>
+<!-- Level 1 -->
+
+<!-- News sub-template Level 2 -->
+<template name="TodaySchedule">
+	{{getTodaySchedule}}
+</template>
+
+<template name="Announcement">
+	{{getAnnouncement}}
+</template>
+<!-- News Level 2-->
+
+<template name="StudentNameDisplay">
+	{{getStudentName}}
+</template>
+
+<template name="DateDisplay">
+	{{getDate}}
+</template>
+
+<!-- InClassActivity sub-template Level 2-->
+<template name="ActivityDisplay">
+	<!-- <button id="activity1" class="btn btn-primary btn-sm btn-disabled">Activity1</button>
+	<br><br>
+	<button id="activity2" class="btn btn-primary btn-lg">Activity2</button>
+	<br><br>
+	<button id="activity3" class="btn btn-primary btn-sm">Activity3</button>
+	<br><br>
+	<button id="activity4" class="btn btn-primary btn-sm">Activity4</button> -->
+
+	<ul>
+		<li><a href={{pathFor route='activity1'}}>Activity 1</a></li>
+		<li><a href={{pathFor route='activity2'}}>Activity 2</a></li>
+	</ul>
+</template>
+
+<template name="activity1">
+</template>
+
+<template name="activity2">
+	<div class="well">
+		<h4>Activity 2</h4>
+		<form class="quiz">
+			<fieldset>
+				{{#each questions}}
+
+          			{{#if isMCQ Question_type}}
+            			{{> mcq}}
+          			{{/if}}
+
+          			{{#if isShortQuestion Question_type}}
+            			{{> short_question}}
+          			{{/if}}
+
+        		{{/each}}
+			</fieldset>
+
+			<input type="submit" class="btn btn-primary" value="Submit">
+		</form>
+	</div>
+</template>
+
+<template name="GroupCreate">
+	<button id="create_group" class="btn btn-success">Create Group</button>
+	<!-- <button class="btn btn-danger">Remove Group</button> -->
+</template>
+
+<template name="GroupListDisplay">
+	<p>Group List</p>
+	<ul>
+		{{#if isInGroup}}
+			{{> groupDisabled}}
+		{{else}}
+			{{#each groups}}
+				{{> groupActive}}
+			{{/each}}
+		{{/if}}
+	</ul>
+</template>
+
+<template name="groupDisabled">
+	<!-- <li>{{text}}</li> -->
+	<h5>You are in group 1</h5>
+	<button class="btn btn-primary btn-xs quit">Quit</button>
+</template>
+
+<template name="groupActive">
+	<li>{{text}} <button class="btn btn-primary btn-xs join">Join</button></li>
+	<br>
+</template>
+<!-- InClassActivity Level 2 -->
+
+
+<template name="mcq">
+  <p>{{Question_id}}. {{Question_content}}</p>
+  {{#each Answer_content}}
+      {{> option}}
+  {{/each}}
+  <br>
+  <br>
+</template>
+
+<template name="option">
+  <!-- question{{../Question_id}} -->
+  <input type="radio" class="xxx" name="question{{../Question_id}}" value={{option}}>{{option}}
+  <br>
+  <br>
+</template>
+
+<template name="short_question">
+  <p>{{Question_id}}. {{Question_content}}</p>
+  <textarea class="sq" name="question{{../Question_id}}" rows="6" cols="100">
+  </textarea>
+</template>
