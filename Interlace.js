@@ -1,6 +1,17 @@
-Router.route('/', function () {
+/*Router.route('/', function () {
   //this.render('firstPage');
   this.render('firstPage');
+});*/
+
+Router.route('/', function () {
+  //this.render('firstPage');
+  if (Meteor.userId() != null && getCookie('lecturer') == "true") {
+    this.render('firstPage');
+  } else if (Meteor.userId() != null && getCookie('student') == "true") {
+    this.render('home');
+  } else {
+    this.render('commonLanding');
+  }
 });
 
 Router.route('/quizQuestions');
@@ -11,20 +22,16 @@ Router.route('/d3vis');
 Router.route('/answerAnalysis');
 
 // Break line
-Router.route('/', {
+/*Router.route('/', {
   name: 'home',
   template: 'home'
-});
+});*/
 
 Router.route('/news');
 Router.route('/inclassactivity');
 Router.route('/archive');
 Router.route('/activity1');
 Router.route('/activity2');
-
-Router.configure({
-  layoutTemplate: 'main'
-});
 
 Questions = new Mongo.Collection("questions");
 Groups = new Mongo.Collection("tasks");
@@ -168,9 +175,8 @@ if (Meteor.isClient) {
   Meteor.subscribe('getNotifications');
   Meteor.subscribe('images');
 
-  Meteor.call('createNotification');
+  //Meteor.call('createNotification');
 
-  Session.set('lecturer', false);
   if (getCookie('firstLogin') == null) {
     setCookie('firstLogin', true);
   }
@@ -295,10 +301,10 @@ if (Meteor.isClient) {
 
   Template.firstPage.helpers({
     lecturerCheck: function() {
-      return Session.get('lecturer');
+      return getCookie('lecturer');
     },
     studentCheck: function() {
-      return Session.get('student');
+      return getCookie('student');
     }
   });
 
@@ -972,8 +978,8 @@ function logout() {
   setCookie('userName', '');
   setCookie('userId', '');
   Session.set('logincheck', false);
-  Session.set('lecturer', false);
-  Session.set('student', false);
+  setCookie('lecturer', false);
+  setCookie('student', false);
 }
 
 function loginIVLE() {
@@ -1015,9 +1021,9 @@ function Populate_UserId() {
       setCookie('userId', data);    //document.cookie="userId="+data;
       
       if (/^[a-zA-Z]+$/.test(data)) {
-          Session.set('lecturer', true);
+          setCookie('lecturer', true);
       } else {
-          Session.set('student', true);
+          setCookie('student', true);
       }
   });
 }

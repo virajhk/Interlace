@@ -5,6 +5,30 @@
 <body>
 
 </body>
+
+<template name="commonLanding">
+	<header>
+        <div class="header-content">
+            <div class="header-content-inner">
+                <h1>The newest collaborative learning platform</h1>
+                <hr>
+                <p>Interlace is designed to facilitate in-class collaboration learning through various activities, quizzes and discussions.</p>
+                <!--<input type="file" name="fileUpload" class="myFileInput">
+                <img id="imageTest" alt="Smiley face" height="100" width="100">-->
+                <a href="#about" class="btn btn-primary btn-xl page-scroll">Find Out More</a><br><br>
+                {{#if lecturerCheck}}
+					<h1 hidden>Lecturer</h1><br><br>
+				{{else}}
+					{{#if studentCheck}}
+						<h1 hidden>Student</h1><br><br>
+					{{/if}}
+				{{/if}}
+			</div>
+		</div>
+	</header>
+	{{> hello}}
+</template>
+
 <template name="hello">
 	<nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
         <div class="container-fluid">
@@ -399,6 +423,7 @@
 
 
 <template name="home">
+	{{> main}}
     <h4>Welcome to Interlace!</h4>
     <h5>CS3219 Class is in progress.</h5>
 </template>
@@ -406,7 +431,6 @@
 <template name="main">
 	<h1>Interlace</h1>
 	{{> navigation}}
-	{{> yield}}
 	
 	<!-- <hr />
 	<p>Copyright &copy; Interlace, 2015-2016.</p> -->
@@ -431,6 +455,7 @@
 
 <!-- Navigation template Level 1 -->
 <template name="news">
+	{{> main}}
 	<div class="well">
 		{{> TodaySchedule}}
 	</div>
@@ -440,6 +465,7 @@
 </template>
 
 <template name="inclassactivity">
+	{{> main}}
 	<div id="activity_panel" class="well">
 		{{> ActivityDisplay}}
 	</div>
@@ -455,6 +481,7 @@
 </template>
 
 <template name="archive">
+	{{> main}}
 	<h2>Archive</h2>
 </template>
 <!-- Level 1 -->
@@ -497,6 +524,7 @@
 </template>
 
 <template name="activity2">
+	{{> main}}
 	<div class="well">
 		<h4>Activity 2</h4>
 		<form class="quiz">
