@@ -419,9 +419,19 @@
   </div>
 </template>
 
+
+
+
+
+
+
+
+
+
+
+
+
 <!-- Break line below Xu Chen -->
-
-
 <template name="home">
 	{{> main}}
     <h4>Welcome to Interlace!</h4>
@@ -506,14 +516,6 @@
 
 <!-- InClassActivity sub-template Level 2-->
 <template name="ActivityDisplay">
-	<!-- <button id="activity1" class="btn btn-primary btn-sm btn-disabled">Activity1</button>
-	<br><br>
-	<button id="activity2" class="btn btn-primary btn-lg">Activity2</button>
-	<br><br>
-	<button id="activity3" class="btn btn-primary btn-sm">Activity3</button>
-	<br><br>
-	<button id="activity4" class="btn btn-primary btn-sm">Activity4</button> -->
-
 	<ul>
 		<li><a href={{pathFor route='activity1'}}>Activity 1</a></li>
 		<li><a href={{pathFor route='activity2'}}>Activity 2</a></li>
@@ -531,11 +533,11 @@
 			<fieldset>
 				{{#each questions}}
 
-          			{{#if isMCQ Question_type}}
+          			{{#if isMCQ type}}
             			{{> mcq}}
           			{{/if}}
 
-          			{{#if isShortQuestion Question_type}}
+          			{{#if isShortQuestion type}}
             			{{> short_question}}
           			{{/if}}
 
@@ -579,23 +581,36 @@
 
 
 <template name="mcq">
-  <p>{{Question_id}}. {{Question_content}}</p>
-  {{#each Answer_content}}
+  <!-- <p>{{Question_id}}. {{Question_content}}</p> -->
+  <p>{{question}}</p>
+  {{> image}}
+  <br>
+  {{#each answer}}
       {{> option}}
   {{/each}}
   <br>
   <br>
 </template>
 
+<template name="image">
+	{{#if emptyURL imageURL}}
+		<p>testing</p>
+	{{else}}
+		<img src={{this.imageURL}} width="600">
+	{{/if}}
+</template>
+
 <template name="option">
   <!-- question{{../Question_id}} -->
-  <input type="radio" class="xxx" name="question{{../Question_id}}" value={{option}}>{{option}}
+  <input type="radio" class="xxx" name="question{{../Question_id}}" value={{option}}>{{optionValue}}
   <br>
   <br>
 </template>
 
 <template name="short_question">
   <p>{{Question_id}}. {{Question_content}}</p>
+  {{> image}}
+  <br>
   <textarea class="sq" name="question{{../Question_id}}" rows="6" cols="100">
   </textarea>
 </template>

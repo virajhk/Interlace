@@ -33,7 +33,7 @@ Router.route('/archive');
 Router.route('/activity1');
 Router.route('/activity2');
 
-Questions = new Mongo.Collection("questions");
+//Questions = new Mongo.Collection("questions");
 Groups = new Mongo.Collection("tasks");
 // Break line
 
@@ -124,8 +124,17 @@ if (Meteor.isClient) {
 
   Template.activity2.helpers({
     questions: function () {
-      QuestionNum = Questions.find().count();
-      return Questions.find({});
+      // QuestionNum = Questions.find().count();
+      // return Questions.find({});
+      //var id = ale.module_id + '_' + ale.lecture_id + '_' + ale.assignment_id;
+      var id = "1_1_1";
+      var tuple = Assignments.find({_id: id}).fetch();
+      var data = tuple[0].data;
+      var questionList = data.questions;  
+
+      //console.log("data");
+      //console.log(questionList);
+      return questionList;
     },
 
     isMCQ: function (Question_type) {
@@ -134,6 +143,12 @@ if (Meteor.isClient) {
 
     isShortQuestion: function (Question_type) {
       return Question_type === "ShortQuestion";
+    }
+  });
+
+  Template.image.helpers({
+    emptyURL: function (url) {
+      return url === "";
     }
   });
 
@@ -154,7 +169,7 @@ if (Meteor.isClient) {
   Template.GroupCreate.events({
     "click #create_group": function (event) {
       event.preventDefault();
-      console.log("xc testing");
+      // console.log("xc testing");
 
       Session.set('numOfGroups', Session.get('numOfGroups') + 1);
       var groupName = "Group " + Session.get('numOfGroups');
