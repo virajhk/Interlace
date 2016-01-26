@@ -582,7 +582,7 @@
 
 <template name="mcq">
   <!-- <p>{{Question_id}}. {{Question_content}}</p> -->
-  <p>{{question}}</p>
+  <p>{{question_id}}. {{question}}</p>
   {{> image}}
   <br>
   {{#each answer}}
@@ -602,15 +602,15 @@
 
 <template name="option">
   <!-- question{{../Question_id}} -->
-  <input type="radio" class="xxx" name="question{{../Question_id}}" value={{option}}>{{optionValue}}
+  <input type="radio" class="xxx" name="question{{question_id}}" value={{optionValue}}>{{optionValue}}
   <br>
   <br>
 </template>
 
 <template name="short_question">
-  <p>{{Question_id}}. {{Question_content}}</p>
+  <p>{{question_id}}. {{question}}</p>
   {{> image}}
   <br>
-  <textarea class="sq" name="question{{../Question_id}}" rows="6" cols="100">
+  <textarea class="sq" name="question{{question_id_get}}" rows="6" cols="100">
   </textarea>
 </template>

@@ -69,6 +69,10 @@ if (Meteor.isClient) {
   Session.setDefault('isGroupCreator', false);
   Session.setDefault('hasGroup', false);
   Session.setDefault('numOfGroups', 3);
+  Session.setDefault('moduleId', '1');
+  Session.setDefault('lectureId', '1');
+  Session.setDefault('activityId', '1');
+  var questionIdCounter = 1;
 
   Template.StudentNameDisplay.helpers({
     getStudentName: function () {
@@ -122,18 +126,33 @@ if (Meteor.isClient) {
     }
   });
 
+  Template.mcq.helpers({
+    question_id: function () {
+      var id = questionIdCounter;
+      questionIdCounter = questionIdCounter + 1;
+      return id;
+    }
+  });
+
+  Template.short_question.helpers({
+    question_id: function () {
+      var id = questionIdCounter;
+      questionIdCounter = questionIdCounter + 1;
+      return id;
+    },
+
+    question_id_get: function () {
+      return questionIdCounter - 1;
+    }
+  });
+
   Template.activity2.helpers({
     questions: function () {
-      // QuestionNum = Questions.find().count();
-      // return Questions.find({});
-      //var id = ale.module_id + '_' + ale.lecture_id + '_' + ale.assignment_id;
-      var id = "1_1_1";
+      var id = Session.get('moduleId') + "_" + Session.get('lectureId') + "_" + Session.get('activityId');
       var tuple = Assignments.find({_id: id}).fetch();
       var data = tuple[0].data;
       var questionList = data.questions;  
-
-      //console.log("data");
-      //console.log(questionList);
+      
       return questionList;
     },
 
@@ -143,12 +162,6 @@ if (Meteor.isClient) {
 
     isShortQuestion: function (Question_type) {
       return Question_type === "ShortQuestion";
-    }
-  });
-
-  Template.image.helpers({
-    emptyURL: function (url) {
-      return url === "";
     }
   });
 
@@ -166,6 +179,19 @@ if (Meteor.isClient) {
     }
   });
 
+
+  Template.image.helpers({
+    emptyURL: function (url) {
+      return url === "";
+    }
+  });
+
+  Template.option.helpers({
+    question_id: function () {
+      return questionIdCounter - 1;
+    }
+  });
+
   Template.GroupCreate.events({
     "click #create_group": function (event) {
       event.preventDefault();
@@ -179,6 +205,11 @@ if (Meteor.isClient) {
       });
     }
   })
+
+
+
+
+
   //Break Line
   Accounts.ui.config({
     passwordSignupFields: "USERNAME_ONLY"
