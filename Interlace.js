@@ -32,6 +32,7 @@ Router.route('/inclassactivity');
 Router.route('/archive');
 Router.route('/activity1');
 Router.route('/activity2');
+Router.route('/lecture1');
 
 //Questions = new Mongo.Collection("questions");
 Groups = new Mongo.Collection("tasks");
@@ -144,6 +145,14 @@ if (Meteor.isClient) {
 
     question_id_get: function () {
       return questionIdCounter - 1;
+    }
+  });
+
+  Template.lecture1.events({
+    "click": function() {
+      var id = Session.get('moduleId') + "_" + Session.get('lectureId') + "_" + Session.get('activityId');
+      console.log(id);
+      //Meteor.call('createFile', id);
     }
   });
 

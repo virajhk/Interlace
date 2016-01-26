@@ -454,7 +454,7 @@
 			<a class="dropdown-toggle" data-toggle="dropdown" href="{{pathFor route='archive'}}" role="button" aria-haspopup="true" aria-expanded="false">Archive <span class="caret"></span></a>
 
 			<ul class="dropdown-menu">
-				<li><a href="#">Lecture 1</a></li>
+				<li><a href={{pathFor route='lecture1'}}>Lecture 1</a></li>
 				<li><a href="#">Lecture 2</a></li>
 				<li><a href="#">Lecture 3</a></li>
 				<li><a href="#">Lecture 4</a></li>
@@ -523,6 +523,11 @@
 </template>
 
 <template name="activity1">
+</template>
+
+<template name="lecture1">
+	{{> main}}
+	<button>Download All</button>
 </template>
 
 <template name="activity2">
