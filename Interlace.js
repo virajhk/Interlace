@@ -65,6 +65,7 @@ Images.allow({
 if (Meteor.isClient) {
   //Break Line
   Session.setDefault('studentId', 'A0105522W');
+  Session.setDefault('assignment_id', '1')
   Session.setDefault('studentName', 'Xu Chen');
   Session.setDefault('isGroupCreator', false);
   Session.setDefault('hasGroup', false);
@@ -161,20 +162,32 @@ if (Meteor.isClient) {
     },
 
     isShortQuestion: function (Question_type) {
-      return Question_type === "ShortQuestion";
+      return Question_type === "short_answer";
     }
   });
 
   Template.activity2.events({
     "submit .quiz": function (event) {
       event.preventDefault();
+      var count = 1;
 
-      $('.xxx:checked').each(function() {
-        console.log($(this).val());
+      //$('.xxx:checked').each(function() {
+      $('.xxx').each(function() {
+        if (this.checked == true) {
+          //var user_answer = $(this).val();
+          var question_id = parseInt(this.name.substr(8, this.name.length));
+
+          Meteor.call('saveStudentAnswer', Session.get('ModuleId'), Session.get('lectureId'), Session.get('assignmentId'), Session.get('assignmentType'), "MCQ", question_id, count, Session.get('studentId'));
+          count = 1;
+        }
+        count++;
       });
 
       $('input[class="sq"], textarea').each(function(){  
-        console.log($(this).val());
+        var user_answer = $(this).val();
+        var question_id = parseInt(this.name.substr(8, this.name.length));
+
+        Meteor.call('saveStudentAnswer', Session.get('ModuleId'), Session.get('lectureId'), Session.get('assignmentId'), Session.get('assignmentType'), "short_answer", question_id, user_answer, Session.get('studentId'));        
       });
     }
   });

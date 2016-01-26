@@ -50,6 +50,18 @@ if (Meteor.isServer) {
     },
     markNotificationAsTrue: function(id, userId, title, body, url) {
       BrowserNotifications.update({_id: id}, {userId: userId, title: title, body: body, url: url, shown: true});
+    },
+    saveStudentAnswer: function(module_code, lecture_id, assignment_id, assignment_type, question_type, question_id, answer_content, student_id) {
+      Answers.insert({
+        module_code: module_code,
+        lecture_id: lecture_id,
+        assignment_id: assignment_id,
+        assignment_type: assignment_type,
+        question_type: question_type,
+        question_id: question_id,
+        answer_content: answer_content,
+        student_id: student_id
+      })
     }
   });
 
