@@ -245,6 +245,20 @@ header {
     -o-background-size: cover;
 }
 
+.designThinkingActivity {
+    position: relative;
+    width: 100%;
+    min-height: auto;
+    text-align: center;
+    color: #fff;
+    background-image: linear-gradient(to bottom, #315481, #918e82 100%);
+    background-position: center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+}
+
 header .header-content {
     position: relative;
     width: 100%;
@@ -310,6 +324,10 @@ header .header-content .header-content-inner p {
     }
 
     .answerAnalysis {
+        min-height: 100%;
+    }
+
+    .designThinkingActivity {
         min-height: 100%;
     }
 }
@@ -383,6 +401,65 @@ background-color: rgb(72, 168, 67);
 
 .x.axis path {
   display: none;
+}
+
+#canvas-display {
+  border: solid 1px black;
+  cursor: crosshair;
+  float: left;
+}
+
+#colors {
+  background-color: #fff;
+  border: 1px solid #000000;
+  display: none;
+  float: left;
+  left: -55px;
+  margin-top: 10px;
+  padding: 0;
+  position: relative;
+  width: 50px;
+}
+
+#colors li {
+  border: 1px solid #000000;
+  height: 20px;
+  width: 20px;
+  cursor: pointer;
+  float: left;
+  margin: 1px;
+  list-style: none;
+}
+
+#colors li.selected {
+  border: solid 1px #eee;
+}
+
+#controls {
+  background: none repeat scroll 0 0 grey;
+  border: 1px solid;
+  border-radius: 5px 5px 5px 5px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-left: -72px;
+  opacity: 0.7;
+  padding: 5px;
+  position: relative;
+  top: 5px;
+}
+
+#control-buttons {
+  background-color: gray;
+  border: 1px solid #000000;
+  border-radius: 5px 5px 5px 5px;
+  display: none;
+  float: left;
+  margin-left: 1px;
+  margin-top: -78px;
+  opacity: 0.7;
+  padding: 10px;
+  position: relative;
+  width: 378px;
 }
 
 

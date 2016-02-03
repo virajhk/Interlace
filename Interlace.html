@@ -147,6 +147,10 @@
 					<button class="btn btn-default col-md-4" id="getModelAnswers">Get Model Answers</button>
 					<p class="col-md-1"></p>
 					<button class="btn btn-default col-md-4" id="getAnalysis">Get Answer Analysis</button>
+				</div>
+				<div class="col-md-12">
+					<p class="col-md-1" style="margin-right:55px;"></p>
+					<button class="btn btn-default col-md-4" id="designThinking">Design Thinking Activity</button>
 				</div><br><br>
             </div>
         </div>
@@ -413,11 +417,176 @@
       </h4>
     </div>
     <div id="{{second_collapse}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="{{second_heading}}">
+      <!--<br>
+      <button class="btn btn-primary col-md-4 col-md-offset-4" id="add_sub_parts">Add Sub-Parts</button><br>-->
       <div id="{{body_question}}" class="panel-body">
       </div>
     </div>
   </div>
 </template>
+
+<template name="addSubParts">
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="{{heading}}">
+      <h4 class="panel-title">
+        <a class="click" id="{{click_question}}" role="button" data-toggle="collapse" data-parent="#accordion" href="#{{collapse}}" aria-expanded="false" aria-controls="{{collapse}}">
+          Part {{part_number}}
+        </a>
+      </h4>
+    </div>
+    <div id="{{second_collapse}}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="{{second_heading}}">
+      <div id="{{body_question}}" class="panel-body">
+      </div>
+    </div>
+  </div>
+</template>
+
+<template name="designThinkingActivity">
+<div class="designThinkingActivity row">
+	{{> hello}}<br><br><br>
+	<h1 style="margin-left: 40px;">Create Design Thinking Activity</h1>
+	<h3 style="margin-left: 40px;">Please enter the module code and title of the activity.</h3><br>
+	<form name="quiz">
+		<div class="col-md-12">
+			<p class="col-md-6" style="display: inline">Module Code:</p>
+			<div class="col-md-4">
+				<input style="display: inline" type="text" id="module_id" class="form-control" placeholder="Enter Module Code here">
+			</div>
+		</div><br><br>
+		<div class="col-md-12">
+			<p class="col-md-6">Title of Activity:</p>
+			<div class="col-md-4">
+				<input style="display: inline" type="text" id="lecture_id" class="form-control" placeholder="Enter title of the activity here">
+			</div>
+		</div><br><br>
+		<p class="col-md-12">
+			<div class="col-md-4"></div>
+			<button class="btn btn-primary col-md-4" id="add_question_designThinking">Add Question</button>
+		</p><br><br><br>
+		<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false"></div>
+	</form>
+</div>
+</template>
+
+<template name="questionTypeSelection">
+<div class="form-group">
+	<label for="{{question_number}}">Select list (select one):</label>
+	<select class="form-control" id="{{question_number}}">
+		<option>Please select the type of question</option>
+        <option>Description Question</option>
+        <option>Short Answer Question</option>
+        <option>Fill in the blanks</option>
+        <option>Freehand Sketching</option>
+	</select>
+</div>
+</template>
+
+<template name="descriptionQuestion">
+	<div class="form-group">
+		<label style="color: black;">Title:</label>
+		<input type="text" class="form-control" id="heading" placeholder="Enter the title here.">
+	</div>
+	<hr>
+	<div class="form-group">
+		<label style="color: black;">Please enter question here:</label>
+		<input type="text" class="form-control" id="question" placeholder="Enter the question here.">
+	</div>
+	<div class="form-group">
+		<textarea type="text" class="form-control" rows="10" id="comment" placeholder="Answer space."></textarea>
+	</div>	
+</template>
+
+<template name="shortAnswerQuestions">
+	<div class="form-group">
+		<label style="color: black;">Title:</label>
+		<input type="text" class="form-control" id="heading" placeholder="Enter the title here.">
+	</div>
+	<hr>
+	{{> shortAnswerQuestion}}
+</template>
+
+<template name="shortAnswerQuestion">
+	<label style="color: black;">Please enter question here:</label><br>
+	<div class="form-group col-md-8">
+		<input type="text" class="form-control" id="question" placeholder="Enter the question here.">
+	</div>
+	<div class="form-group col-md-4">
+		<input type="text" class="form-control" id="question" placeholder="Enter any hints here.">
+	</div>
+	<div class="form-group">
+		<textarea type="text" class="form-control" rows="3" id="comment" placeholder="Answer space."></textarea>
+	</div>
+	<hr>
+	<button class="btn btn-primary col-md-4 col-md-offset-4 clickHide" id="add_short_answer_question">Add Question</button>
+</template>
+
+<template name="fillInTheBlanks">
+	<div class="form-group">
+		<label style="color: black;">Title:</label>
+		<input type="text" class="form-control" id="heading" placeholder="Enter the title here.">
+	</div>
+	<hr>
+	<div id="fillInTheBlanksQuestions"></div>
+	<button class="btn btn-primary col-md-4 col-md-offset-1" id="add_text">Add Text</button>
+	<button class="btn btn-primary col-md-4 col-md-offset-2" id="add_blank">Add Blank</button>
+</template>
+
+<template name="addText">
+	<div class="form-group">
+		<input type="text" class="form-control" id="text" placeholder="Enter text here.">
+	</div>
+	<hr>
+</template>
+
+<template name="addBlank">
+	<div>
+		<p style="color: black;" class="col-md-8">________________________________________________________________</p>
+		<div class="form-group col-md-4">
+			<input type="text" class="form-control" id="blank" placeholder="Enter any hints here.">
+		</div>
+	</div><br><br>
+	<hr>
+</template>
+
+<template name="freehandSketching">
+<span id="controls">Controls</span>
+<canvas id="canvas-display" style="display: 1px solid black;" width="400" height="400"></canvas>
+<br/>
+<ul id="colors">
+  <li style="background-color:black;"> </li>
+  <li style="background-color:red;"> </li>
+  <li style="background-color:green;"> </li>
+  <li style="background-color:orange;"> </li>
+  <li style="background-color:brown;"> </li>
+  <li style="background-color:#d2232a;"> </li>
+  <li style="background-color:#fcb017;"> </li>
+  <li style="background-color:#fff460;"> </li>
+  <li style="background-color:#9ecc3b;"> </li>
+  <li style="background-color:#fcb017;"> </li>
+  <li style="background-color:#fff460;"> </li>
+  <li style="background-color:#F43059;"> </li>
+  <li style="background-color:#82B82C;"> </li>
+  <li style="background-color:#0099FF;"> </li>
+  <li style="background-color:#ff00ff;"> </li>
+</ul>
+<br style="clear:both;" />
+<br style="clear:both;" />
+<div id="control-buttons">
+  <div style="float:left;">
+    <button id="undo" href="#" disabled="disabled">Undo</button>
+    <button id="clear" href="#">Reset</button>
+    <button id="export" href="#">Save as Image</button>
+  </div>
+  <div style="float:left;margin-left: 22px;text-align: center;width: 130px;">
+    Brush Size:
+    <br />
+    <input name="brush" id="brush_size" type="range" value="5" min="0" max="20" />
+  </div>
+</div>
+</template>
+
+
+
 
 
 

@@ -1,9 +1,9 @@
-/*Router.route('/', function () {
+Router.route('/', function () {
   //this.render('firstPage');
   this.render('firstPage');
-});*/
+});
 
-Router.route('/', function () {
+/*Router.route('/', function () {
   //this.render('firstPage');
   if (Meteor.userId() != null && getCookie('lecturer') == "true") {
     this.render('firstPage');
@@ -12,7 +12,7 @@ Router.route('/', function () {
   } else {
     this.render('commonLanding');
   }
-});
+});*/
 
 Router.route('/quizQuestions');
 Router.route('/editQuiz');
@@ -20,6 +20,7 @@ Router.route('/releaseQuiz');
 Router.route('/modelAnswers');
 Router.route('/d3vis');
 Router.route('/answerAnalysis');
+Router.route('/designThinkingActivity');
 
 // Break line
 /*Router.route('/', {
@@ -71,8 +72,8 @@ if (Meteor.isClient) {
   Session.setDefault('isGroupCreator', false);
   Session.setDefault('hasGroup', false);
   Session.setDefault('numOfGroups', 3);
-  Session.setDefault('moduleId', '1');
-  Session.setDefault('lectureId', '1');
+  Session.setDefault('moduleId', '3');
+  Session.setDefault('lectureId', '2');
   Session.setDefault('activityId', '1');
   var questionIdCounter = 1;
 
@@ -263,6 +264,7 @@ if (Meteor.isClient) {
 
   var question_id = 0;
   var analysis_question = 0;
+  var part_number = 0;
   var latest;
   var curr_question;
   var graph_module, graph_lecture, graph_assignment;
@@ -318,6 +320,10 @@ if (Meteor.isClient) {
     'click #getAnalysis': function(e) {
       e.preventDefault();
       window.location = 'answerAnalysis';
+    },
+    'click #designThinking': function(e) {
+      e.preventDefault();
+      window.location = 'designThinkingActivity';
     }/*,
     'change .myFileInput': function(event, template) {
       var source;
@@ -785,50 +791,264 @@ Template.answerAnalysis.events({
 Template.addAccordionField.events({
   'click .click' :function (e) {
     e.preventDefault();
-    var id = "#body" + e.currentTarget.id;
-    curr_question = wordsToNumber(e.currentTarget.id);
-    if (assignment[0].data.questions[curr_question-1].type == "MCQ") {
-      for (var i=0; i<assignment[0].data.questions[curr_question-1].answer.length; i++) {
-        if (assignment[0].data.questions[curr_question-1].answer[i].answer == 1) {
-          model_answer = "Option " + (i+1).toString();
+    if ((window.location.href).indexOf("answerAnalysis") > -1) {
+      var id = "#body" + e.currentTarget.id;
+      curr_question = wordsToNumber(e.currentTarget.id);
+      if (assignment[0].data.questions[curr_question-1].type == "MCQ") {
+        for (var i=0; i<assignment[0].data.questions[curr_question-1].answer.length; i++) {
+          if (assignment[0].data.questions[curr_question-1].answer[i].answer == 1) {
+            model_answer = "Option " + (i+1).toString();
+            break;
+          }
+        }
+      } else {
+        model_answer = assignment[0].data.questions[curr_question-1].answer;
+      }
+      var questionFound = 0;
+      for (var i=0; i<mcqQuestions.length; i++) {
+        if (curr_question-1 == mcqQuestions[i]) {
+          questionFound = 1;
           break;
         }
       }
-    } else {
-      model_answer = assignment[0].data.questions[curr_question-1].answer;
-    }
-    var questionFound = 0;
-    for (var i=0; i<mcqQuestions.length; i++) {
-      if (curr_question-1 == mcqQuestions[i]) {
-        questionFound = 1;
-        break;
+      if (e.currentTarget.attributes[6].nodeValue == "false") {
+        if (questionFound == 1) {
+          var element = document.getElementById("d3vis");
+          if (element != undefined || element != null) {
+            element.parentNode.removeChild(element);
+          }
+          Blaze.renderWithData(Template.d3vis, {my: "data"}, $(id)[0]);
+        } else {
+          var element = document.getElementById("notice");
+          if (element != undefined || element != null) {
+            element.parentNode.removeChild(element);
+          }
+          Blaze.renderWithData(Template.notice, {my: "data"}, $(id)[0]);
+        }
       }
-    }
-    if (e.currentTarget.attributes[6].nodeValue == "false") {
-      if (questionFound == 1) {
+      else {
         var element = document.getElementById("d3vis");
         if (element != undefined || element != null) {
           element.parentNode.removeChild(element);
         }
-        Blaze.renderWithData(Template.d3vis, {my: "data"}, $(id)[0]);
-      } else {
-        var element = document.getElementById("notice");
+        element = document.getElementById("notice");
         if (element != undefined || element != null) {
           element.parentNode.removeChild(element);
         }
-        Blaze.renderWithData(Template.notice, {my: "data"}, $(id)[0]);
+      }
+    } else {
+      //Design Thinking Activity
+      var id = "#body" + e.currentTarget.id;
+      var element = document.getElementById("sel" + analysis_question);
+      if (element == undefined || element == null) {
+        Blaze.renderWithData(Template.questionTypeSelection, {my: "data"}, $(id)[0]);
       }
     }
-    else {
-      var element = document.getElementById("d3vis");
-      if (element != undefined || element != null) {
-        element.parentNode.removeChild(element);
-      }
-      element = document.getElementById("notice");
-      if (element != undefined || element != null) {
-        element.parentNode.removeChild(element);
-      }
+  },
+  'click #add_sub_parts': function(e) {
+    e.preventDefault();
+    var id = "body" + e.currentTarget.parentNode.id.substr(8, e.currentTarget.parentNode.id.length);
+    var element = document.getElementById(id);
+    console.log(element.childNodes);
+    Blaze.renderWithData(Template.addSubParts, {my: "data"}, $("#" + id)[0]);
+    Blaze.renderWithData(Template.addSubParts, {my: "data"}, $("#" + id)[0]);
+  }
+});
+
+Template.questionTypeSelection.events({
+  'change .form-control': function(e) {
+    e.preventDefault();
+    var id = "#body" + numberToWords(e.currentTarget.id.substr(3, e.currentTarget.id.length));
+    if (e.currentTarget.value == "Description Question") {
+      Blaze.renderWithData(Template.descriptionQuestion, {my: "data"}, $(id)[0]);
+    } else if (e.currentTarget.value == "Short Answer Question") {
+      Blaze.renderWithData(Template.shortAnswerQuestions, {my: "data"}, $(id)[0]);
+    } else if (e.currentTarget.value == "Fill in the blanks") {
+      Blaze.renderWithData(Template.fillInTheBlanks, {my: "data"}, $(id)[0]);
+    } else if (e.currentTarget.value == "Freehand Sketching") {
+      Blaze.renderWithData(Template.freehandSketching, {my: "data"}, $(id)[0]);
     }
+  }
+});
+
+Template.freehandSketching.onRendered(function() {
+  (function($) {
+    $.fn.paintBrush = function(options) {
+      var undoHistory = [];
+      var settings = {
+          'targetID': 'canvas-display'
+        },
+
+        $this = $(this),
+        o = {},
+        ui = {},
+
+        core = {
+          init: function(options) {
+            ui.$loadParentDiv = o.targetID;
+            core.draw();
+            core.controls();
+            //core.toggleScripts();
+          },
+
+          canvasInit: function() {
+            context = document.getElementById("canvas-display").getContext("2d");
+            context.lineCap = "round";
+            //Fill it with white background
+            context.save();
+            context.fillStyle = '#fff';
+            context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+            context.restore();
+          },
+
+          saveActions: function() {
+            var imgData = document.getElementById("canvas-display").toDataURL("image/png");
+            undoHistory.push(imgData);
+            $('#undo').removeAttr('disabled');
+
+          },
+
+          undoDraw: function() {
+            if (undoHistory.length > 0) {
+              var undoImg = new Image();
+              $(undoImg).load(function() {
+                var context = document.getElementById("canvas-display").getContext("2d");
+                context.drawImage(undoImg, 0, 0);
+              });
+              undoImg.src = undoHistory.pop();
+              if (undoHistory.length == 0)
+                $('#undo').attr('disabled', 'disabled');
+            }
+          },
+
+          draw: function() {
+            var canvas, cntxt, top, left, draw, draw = 0;
+            canvas = document.getElementById("canvas-display");
+            cntxt = canvas.getContext("2d");
+            top = $('#canvas-display').offset().top;
+            left = $('#canvas-display').offset().left;
+            core.canvasInit();
+
+            //Drawing Code
+            $('#canvas-display').mousedown(function(e) {
+                if (e.button == 0) {
+                  draw = 1;
+                  core.saveActions(); //Start The drawing flow. Save the state
+                  cntxt.beginPath();
+                  cntxt.moveTo(e.pageX - left, e.pageY - top);
+                } else {
+                  draw = 0;
+                }
+              })
+              .mouseup(function(e) {
+                if (e.button != 0) {
+                  draw = 1;
+                } else {
+                  draw = 0;
+                  cntxt.lineTo(e.pageX - left + 1, e.pageY - top + 1);
+                  cntxt.stroke();
+                  cntxt.closePath();
+                }
+              })
+              .mousemove(function(e) {
+                if (draw == 1) {
+                  cntxt.lineTo(e.pageX - left + 1, e.pageY - top + 1);
+                  cntxt.stroke();
+                }
+              });
+
+          },
+
+          controls: function() {
+            canvas = document.getElementById("canvas-display");
+            cntxt = canvas.getContext("2d");
+            $('#export').click(function(e) {
+              e.preventDefault();
+              window.open(canvas.toDataURL(), 'Canvas Export', 'height=400,width=400');
+            });
+
+            $('#clear').click(function(e) {
+              e.preventDefault();
+              canvas.width = canvas.width;
+              canvas.height = canvas.height;
+              core.canvasInit();
+              $('#colors li:first').click();
+              $('#brush_size').change();
+              //core.toggleScripts();
+              undoHistory = [];
+            });
+
+            $('#brush_size').change(function(e) {
+              cntxt.lineWidth = $(this).val();
+              //core.toggleScripts();
+            });
+
+            $('#colors li').click(function(e) {
+              e.preventDefault();
+              $('#colors li').removeClass('selected');
+              $(this).addClass('selected');
+              cntxt.strokeStyle = $(this).css('background-color');
+              core.toggleScripts();
+            });
+
+            //Undo Binding
+            $('#undo').click(function(e) {
+              e.preventDefault();
+              core.undoDraw()
+              core.toggleScripts();
+            });
+
+            //Init the brush and color
+            $('#colors li:first').click();
+            $('#brush_size').change();
+
+            $('#controls').click(function() {
+              core.toggleScripts();
+            });
+          },
+
+          toggleScripts: function() {
+            $('#colors').slideToggle(400);
+            $('#control-buttons').toggle(400);
+          }
+        };
+
+      $.extend(true, o, settings, options);
+
+      core.init();
+
+    };
+  })($);
+  $('#canvas-display').paintBrush();
+});
+
+Template.addSubParts.events({
+  'click .click': function(e) {
+    console.log(e.currentTarget.id);
+  }
+});
+
+Template.shortAnswerQuestion.events({
+  'click #add_short_answer_question': function(e) {
+    e.preventDefault();
+    $('.clickHide').hide();
+    var id = "#" + e.currentTarget.parentNode.id; //"#body" + numberToWords(e.currentTarget.id.substr(3, e.currentTarget.id.length));
+    Blaze.renderWithData(Template.shortAnswerQuestion, {my: "data"}, $(id)[0]);
+  }
+});
+
+Template.fillInTheBlanks.events({
+  'click #add_text': function(e) {
+    e.preventDefault();
+    //$('.clickHide1').hide();
+    var id = "#fillInTheBlanksQuestions";
+    Blaze.renderWithData(Template.addText, {my: "data"}, $(id)[0]);
+  },
+  'click #add_blank': function(e) {
+    e.preventDefault();
+    //$('.clickHide1').hide();
+    var id = "#fillInTheBlanksQuestions";
+    Blaze.renderWithData(Template.addBlank, {my: "data"}, $(id)[0]);
   }
 });
 
@@ -857,6 +1077,41 @@ Template.addAccordionField.helpers({
   }
 });
 
+Template.addSubParts.helpers({
+  part_number: function() {
+    part_number = part_number + 1;
+    var returnNumber = part_number;
+    if (part_number == 2) {
+      part_number = 0;
+    }
+    return returnNumber;
+  },
+  heading: function() {
+    return "heading" + numberToWords(part_number+1) + "." + numberToWords(analysis_question+1);
+  },
+  collapse: function() {
+    return "collapse" + numberToWords(part_number+1) + "." + numberToWords(analysis_question+1);
+  },
+  second_heading: function() {
+    return "heading" + numberToWords(part_number) + "." + numberToWords(analysis_question);
+  },
+  second_collapse: function() {
+    return "collapse" + numberToWords(part_number) + "." + numberToWords(analysis_question);
+  },
+  body_question: function(){
+    return "body" + numberToWords(part_number) + "." + numberToWords(analysis_question);
+  },
+  click_question: function(){
+    return numberToWords(part_number+1) + "." + numberToWords(analysis_question);
+  }
+});
+
+Template.questionTypeSelection.helpers({
+  question_number: function() {
+    return "sel" + analysis_question.toString();
+  }
+})
+
 Template.d3vis.helpers({
   'model_answer': function() {
     return model_answer;
@@ -870,6 +1125,14 @@ Template.notice.helpers({
   }
 });
 
+Template.designThinkingActivity.events({
+  'click #add_question_designThinking': function (e) {
+    e.preventDefault();
+    Blaze.renderWithData(Template.addAccordionField, {my: "data"}, $("#accordion")[0]);
+    var element = document.getElementById(numberToWords(analysis_question));
+    element.click();
+  }
+});
 /*Template.releaseQuiz.events({
     'click #release_ale': function (e) {
       e.preventDefault();
@@ -1341,5 +1604,6 @@ function wordsToNumber(s) {
       }
   }
 }
+
 
 
