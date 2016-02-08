@@ -15,3 +15,5 @@ accounts-ui
 accounts-password
 cfs:gridfs
 mrt:lightbox2
+chipcastledotcom:jspdf
+new3rs:html2canvas

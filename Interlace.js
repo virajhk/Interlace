@@ -858,14 +858,19 @@ Template.addAccordionField.events({
 Template.questionTypeSelection.events({
   'change .form-control': function(e) {
     e.preventDefault();
-    var id = "#body" + numberToWords(e.currentTarget.id.substr(3, e.currentTarget.id.length));
+    var id = "#inside_body" + numberToWords(e.currentTarget.id.substr(3, e.currentTarget.id.length));
     if (e.currentTarget.value == "Description Question") {
+      document.getElementById(id.substr(1, id.length)).innerHTML = "";
       Blaze.renderWithData(Template.descriptionQuestion, {my: "data"}, $(id)[0]);
     } else if (e.currentTarget.value == "Short Answer Question") {
+      document.getElementById(id.substr(1, id.length)).innerHTML = "";
       Blaze.renderWithData(Template.shortAnswerQuestions, {my: "data"}, $(id)[0]);
+      Blaze.renderWithData(Template.shortAnswerQuestion, {my: "data"}, $(id)[0]);
     } else if (e.currentTarget.value == "Fill in the blanks") {
+      document.getElementById(id.substr(1, id.length)).innerHTML = "";
       Blaze.renderWithData(Template.fillInTheBlanks, {my: "data"}, $(id)[0]);
     } else if (e.currentTarget.value == "Freehand Sketching") {
+      document.getElementById(id.substr(1, id.length)).innerHTML = "";
       Blaze.renderWithData(Template.freehandSketching, {my: "data"}, $(id)[0]);
     }
   }
@@ -979,6 +984,8 @@ Template.freehandSketching.onRendered(function() {
             });
 
             $('#brush_size').change(function(e) {
+              e.preventDefault();
+              console.log($(this).val());
               cntxt.lineWidth = $(this).val();
               //core.toggleScripts();
             });
@@ -988,14 +995,14 @@ Template.freehandSketching.onRendered(function() {
               $('#colors li').removeClass('selected');
               $(this).addClass('selected');
               cntxt.strokeStyle = $(this).css('background-color');
-              core.toggleScripts();
+              //core.toggleScripts();
             });
 
             //Undo Binding
             $('#undo').click(function(e) {
               e.preventDefault();
               core.undoDraw()
-              core.toggleScripts();
+              //core.toggleScripts();
             });
 
             //Init the brush and color
@@ -1032,7 +1039,7 @@ Template.shortAnswerQuestion.events({
   'click #add_short_answer_question': function(e) {
     e.preventDefault();
     $('.clickHide').hide();
-    var id = "#" + e.currentTarget.parentNode.id; //"#body" + numberToWords(e.currentTarget.id.substr(3, e.currentTarget.id.length));
+    var id = "#" + e.currentTarget.parentNode.id;
     Blaze.renderWithData(Template.shortAnswerQuestion, {my: "data"}, $(id)[0]);
   }
 });
@@ -1071,6 +1078,9 @@ Template.addAccordionField.helpers({
   },
   body_question: function(){
     return "body" + numberToWords(analysis_question);
+  },
+  body_question_inside: function(){
+    return "inside_body" + numberToWords(analysis_question);
   },
   click_question: function(){
     return numberToWords(analysis_question+1);
@@ -1131,8 +1141,34 @@ Template.designThinkingActivity.events({
     Blaze.renderWithData(Template.addAccordionField, {my: "data"}, $("#accordion")[0]);
     var element = document.getElementById(numberToWords(analysis_question));
     element.click();
+  },
+  'click #generatePDF': function (e) {
+    e.preventDefault();
+    $('#accordion').scrollTop(0);
+    var form = $('#collapseOne'),
+        cache_width = form.width(),
+        a4  =[ 595.28,  841.89];
+
+    getCanvas(form, a4).then(function(canvas){
+      var img = canvas.toDataURL("image/png"),
+          doc = new jsPDF({
+              unit:'px', 
+              format:'a4'
+          });     
+      doc.addImage(img, 'JPEG', 20, 20);
+      doc.save('test.pdf');
+      form.width(cache_width);
+    });
   }
 });
+
+function getCanvas(form, a4){
+ form.width((a4[0]*1.33333) -80).css('max-width','none');
+ return html2canvas(form,{
+     imageTimeout:2000,
+     removeContainer:true
+    }); 
+}
 /*Template.releaseQuiz.events({
     'click #release_ale': function (e) {
       e.preventDefault();
