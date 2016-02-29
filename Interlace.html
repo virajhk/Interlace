@@ -457,16 +457,30 @@
 		<div class="col-md-12">
 			<p class="col-md-6">Title of Activity:</p>
 			<div class="col-md-4">
-				<input style="display: inline" type="text" id="lecture_id" class="form-control" placeholder="Enter title of the activity here">
+				<input style="display: inline" type="text" id="activity_title" class="form-control" placeholder="Enter title of the activity here">
 			</div>
-		</div><br><br>
-		<p class="col-md-12">
-			<div class="col-md-1"></div>
-			<button class="btn btn-primary col-md-4" id="add_question_designThinking" style="display: inline;">Add Question</button>
-			<div class="col-md-2"></div>
-			<button class="btn btn-primary col-md-4" id="generatePDF" style="display: inline;">Export to PDF</button>
-		</p><br><br><br>
+		</div><br>
+		<div id="newOrOld">
+			<p class="col-md-12">
+				<div class="col-md-1"></div>
+				<button class="btn btn-primary col-md-4" id="new_designThinking" style="display: inline;">Create New Activity</button>
+				<div class="col-md-2"></div>
+				<button class="btn btn-primary col-md-4" id="retrieve_designThinking" style="display: inline;">Retrieve Existing Activity</button>
+			</p><br><br>
+		</div>
+		<div id="otherButtons" style="display: none;">
+			<p class="col-md-12">
+				<div class="col-md-1"></div>
+				<button class="btn btn-primary col-md-4" id="add_question_designThinking" style="display: inline;">Add Question</button>
+				<div class="col-md-2"></div>
+				<button class="btn btn-primary col-md-4" id="generatePDF" style="display: inline;">Export to PDF</button>
+			</p><br><br><br>
+		</div><br>
 		<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false"></div>
+		<p class="col-md-12">
+			<div class="col-md-4"></div>
+			<button class="btn btn-success col-md-4" id="save_designThinking" style="display: inline;">Save Activity</button>
+		</p><br><br>
 	</form>
 </div>
 </template>
@@ -487,12 +501,12 @@
 <template name="descriptionQuestion">
 	<div class="form-group">
 		<label style="color: black;">Title:</label>
-		<input type="text" class="form-control" id="heading" placeholder="Enter the title here.">
+		<input type="text" class="form-control desc" id="heading" placeholder="Enter the title here.">
 	</div>
 	<hr>
 	<div class="form-group">
 		<label style="color: black;">Please enter question here:</label>
-		<input type="text" class="form-control" id="question" placeholder="Enter the question here.">
+		<input type="text" class="form-control desc" id="question" placeholder="Enter the question here.">
 	</div>
 	<div class="form-group">
 		<textarea type="text" class="form-control" rows="10" id="comment" placeholder="Answer space."></textarea>
@@ -502,7 +516,7 @@
 <template name="shortAnswerQuestions">
 	<div class="form-group">
 		<label style="color: black;">Title:</label>
-		<input type="text" class="form-control" id="heading" placeholder="Enter the title here.">
+		<input type="text" class="form-control short_title" id="heading" placeholder="Enter the title here.">
 	</div>
 	<hr>
 </template>
@@ -510,10 +524,10 @@
 <template name="shortAnswerQuestion">
 	<label style="color: black;">Please enter question here:</label><br>
 	<div class="form-group col-md-8">
-		<input type="text" class="form-control" id="question" placeholder="Enter the question here.">
+		<input type="text" class="form-control short_question" id="question" placeholder="Enter the question here.">
 	</div>
 	<div class="form-group col-md-4">
-		<input type="text" class="form-control" id="question" placeholder="Enter any hints here.">
+		<input type="text" class="form-control short_hints" placeholder="Enter any hints here.">
 	</div>
 	<div class="form-group">
 		<textarea type="text" class="form-control" rows="3" id="comment" placeholder="Answer space."></textarea>
@@ -525,10 +539,10 @@
 <template name="fillInTheBlanks">
 	<div class="form-group">
 		<label style="color: black;">Title:</label>
-		<input type="text" class="form-control" id="heading" placeholder="Enter the title here.">
+		<input type="text" class="form-control fill_title" id="heading" placeholder="Enter the title here.">
 	</div>
 	<hr>
-	<div id="fillInTheBlanksQuestions"></div>
+	<div id="{{fillId}}"></div>
 	<div class="form-group">
 	<button class="btn btn-primary col-md-4 col-md-offset-1" id="add_text">Add Text</button>
 	<button class="btn btn-primary col-md-4 col-md-offset-2" id="add_blank">Add Blank</button>
@@ -538,7 +552,7 @@
 
 <template name="addText">
 	<div class="form-group">
-		<input type="text" class="form-control" id="text" placeholder="Enter text here.">
+		<input type="text" class="form-control fill_text" id="text" placeholder="Enter text here.">
 	</div>
 	<hr>
 </template>
@@ -547,7 +561,7 @@
 	<div>
 		<p style="color: black;" class="col-md-8">________________________________________________________________</p>
 		<div class="form-group col-md-4">
-			<input type="text" class="form-control" id="blank" placeholder="Enter any hints here.">
+			<input type="text" class="form-control fill_hint" id="blank" placeholder="Enter any hints here.">
 		</div>
 	</div><br><br>
 	<hr>
@@ -556,7 +570,7 @@
 <template name="freehandSketching">
 <div class="form-group">
 	<label style="color: black;">Title:</label>
-	<input type="text" class="form-control" id="heading" placeholder="Enter the title here.">
+	<input type="text" class="form-control free_title" id="heading" placeholder="Enter the title here.">
 </div>
 <hr>
 <span id="controls">Controls</span>

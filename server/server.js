@@ -22,6 +22,10 @@ if (Meteor.isServer) {
     return BrowserNotifications.find({});
   });
 
+  Meteor.publish('getDesignThinking', function(){
+    return DesignThinking.find({});
+  });
+
   Meteor.publish('images', function(){ 
     return Images.find({}); 
   });
@@ -62,6 +66,18 @@ if (Meteor.isServer) {
         answer_content: answer_content,
         student_id: student_id
       })
+    },
+    saveDesignThinking: function(id, html, data) {
+      var existing = DesignThinking.find({_id: id}).fetch();
+      if (existing.length == 0) {
+        DesignThinking.insert({
+          _id: id,
+          html: html,
+          data: data
+        });
+      } else {
+        DesignThinking.update({_id: id}, {data: data});
+      }
     }
   });
 

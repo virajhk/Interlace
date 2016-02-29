@@ -43,6 +43,8 @@ Assignments = new Mongo.Collection("assignments");
 Answers = new Meteor.Collection("answers");
 BrowserNotifications = new Mongo.Collection("browserNotifications");
 
+DesignThinking = new Mongo.Collection("designThinking");
+
 var imageStore = new FS.Store.GridFS("images");
 
 Images = new FS.Collection("images", {
@@ -242,6 +244,7 @@ if (Meteor.isClient) {
   Meteor.subscribe('getAssignment');
   Meteor.subscribe('getAnswers');
   Meteor.subscribe('getNotifications');
+  Meteor.subscribe('getDesignThinking');
   Meteor.subscribe('images');
 
   //Meteor.call('createNotification');
@@ -274,6 +277,9 @@ if (Meteor.isClient) {
   var answerArray = [];
   var mcqQuestions = [];
   var imageArray = [];
+
+  var shortAnswerQuestionsNumber = [];
+  var fillInTheBlanksArray = [];
 
   //check query string for search token
   if (search.token && search.token.length > 0 && search.token != 'undefined') {
@@ -1041,23 +1047,46 @@ Template.shortAnswerQuestion.events({
     $('.clickHide').hide();
     var id = "#" + e.currentTarget.parentNode.id;
     Blaze.renderWithData(Template.shortAnswerQuestion, {my: "data"}, $(id)[0]);
+
+    console.log(shortAnswerQuestionsNumber[wordsToNumber(e.currentTarget.parentNode.id.substr(11, e.currentTarget.parentNode.id.length))]);
+    if (shortAnswerQuestionsNumber[wordsToNumber(e.currentTarget.parentNode.id.substr(11, e.currentTarget.parentNode.id.length))] == null || shortAnswerQuestionsNumber[wordsToNumber(e.currentTarget.parentNode.id.substr(11, e.currentTarget.parentNode.id.length))] == undefined) {
+      shortAnswerQuestionsNumber[wordsToNumber(e.currentTarget.parentNode.id.substr(11, e.currentTarget.parentNode.id.length))] = 2;
+    } else {
+      shortAnswerQuestionsNumber[wordsToNumber(e.currentTarget.parentNode.id.substr(11, e.currentTarget.parentNode.id.length))]++;
+    }
   }
 });
 
 Template.fillInTheBlanks.events({
   'click #add_text': function(e) {
     e.preventDefault();
-    //$('.clickHide1').hide();
-    var id = "#fillInTheBlanksQuestions";
+    var id = "#fillInTheBlanksQuestions" + e.currentTarget.parentNode.parentNode.id.substr(11, e.currentTarget.parentNode.parentNode.id.length);
     Blaze.renderWithData(Template.addText, {my: "data"}, $(id)[0]);
+
+    if (fillInTheBlanksArray[wordsToNumber(e.currentTarget.parentNode.parentNode.id.substr(11, e.currentTarget.parentNode.parentNode.id.length))] == undefined) {
+      fillInTheBlanksArray[wordsToNumber(e.currentTarget.parentNode.parentNode.id.substr(11, e.currentTarget.parentNode.parentNode.id.length))] = [];
+      fillInTheBlanksArray[wordsToNumber(e.currentTarget.parentNode.parentNode.id.substr(11, e.currentTarget.parentNode.parentNode.id.length))].push('t');
+    } else
+      fillInTheBlanksArray[wordsToNumber(e.currentTarget.parentNode.parentNode.id.substr(11, e.currentTarget.parentNode.parentNode.id.length))].push('t');
   },
   'click #add_blank': function(e) {
     e.preventDefault();
-    //$('.clickHide1').hide();
-    var id = "#fillInTheBlanksQuestions";
+    var id = "#fillInTheBlanksQuestions" + e.currentTarget.parentNode.parentNode.id.substr(11, e.currentTarget.parentNode.parentNode.id.length);
     Blaze.renderWithData(Template.addBlank, {my: "data"}, $(id)[0]);
+    if (fillInTheBlanksArray[wordsToNumber(e.currentTarget.parentNode.parentNode.id.substr(11, e.currentTarget.parentNode.parentNode.id.length))] == undefined) {
+      fillInTheBlanksArray[wordsToNumber(e.currentTarget.parentNode.parentNode.id.substr(11, e.currentTarget.parentNode.parentNode.id.length))] = [];
+      fillInTheBlanksArray[wordsToNumber(e.currentTarget.parentNode.parentNode.id.substr(11, e.currentTarget.parentNode.parentNode.id.length))].push('b');
+    } else
+      fillInTheBlanksArray[wordsToNumber(e.currentTarget.parentNode.parentNode.id.substr(11, e.currentTarget.parentNode.parentNode.id.length))].push('b');
   }
 });
+
+Template.fillInTheBlanks.helpers({
+  fillId: function() {
+    var id = "fillInTheBlanksQuestions" + numberToWords(analysis_question);
+    return id;
+  }
+})
 
 Template.addAccordionField.helpers({
   question_number: function() {
@@ -1159,6 +1188,92 @@ Template.designThinkingActivity.events({
       doc.save('test.pdf');
       form.width(cache_width);
     });
+  },
+  'click #save_designThinking': function (e) {
+    e.preventDefault();
+    var accordion = document.getElementById('accordion');
+    var accordionInnerHtml = accordion.innerHTML;
+    var module_id = document.getElementById('module_id').value;
+    var activity_title = document.getElementById('activity_title').value;
+    var id = module_id + "_" + activity_title;
+
+    var questionValues = [];
+
+    var selects = document.getElementsByTagName('select');
+    var desc = document.getElementsByClassName('desc');
+    var short_questions = document.getElementsByClassName('short_question');
+    var short_hints = document.getElementsByClassName('short_hints');
+    var short_title = document.getElementsByClassName('short_title');
+    var fill_title = document.getElementsByClassName('fill_title');
+    var fill_text = document.getElementsByClassName('fill_text');
+    var fill_hint = document.getElementsByClassName('fill_hint');
+    var free_title = document.getElementsByClassName('free_title');
+
+    var j=0;
+    var k=0;
+    var l=0;
+    var m=0;
+    var n=0;
+    var p=0;
+    for (var i=0; i<selects.length; i++) {
+      var values = {
+        questionType: selects[i].value
+      }
+
+      if (selects[i].value == "Description Question") {
+        values.title = desc[j*2].value;
+        values.question = desc[j*2 + 1].value;
+        j++;
+      } else if (selects[i].value == "Short Answer Question") {
+        values.title = short_title[k].value;
+        values.questions = [];
+        values.hints = [];
+        for (var x=0; x<shortAnswerQuestionsNumber[i+1]; x++) {
+          values.questions.push(short_questions[x].value);
+          values.hints.push(short_hints[x].value);
+        }
+        k++;
+      } else if (selects[i].value == "Fill in the blanks") {
+        values.title = fill_title[l].value;
+        values.text = [];
+        values.hints = [];
+        values.sequence = fillInTheBlanksArray[i+1];   //sequence of occurence of text and blanks
+        for (var x=0; x<fillInTheBlanksArray[i+1].length; x++) {
+          if (fillInTheBlanksArray[i+1][x] == 't') {
+            values.text.push(fill_text[m].value);
+            m++;
+          } else {
+            values.hints.push(fill_hint[n].value);
+            n++;
+          }
+        }
+        l++;
+      } else if (selects[i].value == "Freehand Sketching") {
+        values.title = free_title[p].value;
+        p++;
+      }
+
+      questionValues.push(values);
+    }
+
+    Meteor.call('saveDesignThinking', id, accordionInnerHtml, questionValues);
+  },
+  'click #new_designThinking': function (e) {
+    e.preventDefault();
+    $('#newOrOld').hide();
+    $('#otherButtons').show();
+  },
+  'click #retrieve_designThinking': function (e) {
+    e.preventDefault();
+    $('#newOrOld').hide();
+    $('#otherButtons').show();
+    var module_id = document.getElementById('module_id').value;
+    var activity_title = document.getElementById('activity_title').value;
+    var id = module_id + "_" + activity_title;
+    var element = DesignThinking.find({_id: id}).fetch();
+    var accordion = document.getElementById('accordion');
+    accordion.innerHTML = element[0].data;
+    analysis_question = accordion.childNodes.length;
   }
 });
 
