@@ -31,6 +31,10 @@ a:focus {
     color: #eb3812;
 }
 
+.active {
+    overflow: auto;
+}
+
 h1,
 h2,
 h3,
@@ -259,6 +263,20 @@ header {
     -o-background-size: cover;
 }
 
+.solveDesignThinkingActivity {
+    position: relative;
+    width: 100%;
+    min-height: auto;
+    text-align: center;
+    color: #fff;
+    background-image: linear-gradient(to bottom, #315481, #918e82 100%);
+    background-position: center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+}
+
 header .header-content {
     position: relative;
     width: 100%;
@@ -313,22 +331,32 @@ header .header-content .header-content-inner p {
 
     .quizQuestions {
     	min-height: 100%;
+        min-width: 100%;
     }
 
     .editQuiz {
         min-height: 100%;
+        min-width: 100%;
     }
 
     .modelAnswers {
         min-height: 100%;
+        min-width: 100%;
     }
 
     .answerAnalysis {
         min-height: 100%;
+        min-width: 100%;
     }
 
     .designThinkingActivity {
         min-height: 100%;
+        min-width: 100%;
+    }
+
+    .solveDesignThinkingActivity {
+        min-height: 100%;
+        min-width: 100%;
     }
 }
 
@@ -345,6 +373,13 @@ header .header-content .header-content-inner p {
 }
 ul#nav li {
 	display: inline;
+}
+
+#pageTabs {
+    margin: 5px;
+    margin-left: 80px;
+    margin-right: 80px;
+    border: 1px solid black;
 }
 #Announcement {
 	width: 200px;

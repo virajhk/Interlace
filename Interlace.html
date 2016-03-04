@@ -151,6 +151,8 @@
 				<div class="col-md-12">
 					<p class="col-md-1" style="margin-right:55px;"></p>
 					<button class="btn btn-default col-md-4" id="designThinking">Design Thinking Activity</button>
+					<p class="col-md-1"></p>
+					<button class="btn btn-default col-md-4" id="solveDesignThinking">Solve Design Thinking</button>
 				</div><br><br>
             </div>
         </div>
@@ -485,6 +487,37 @@
 </div>
 </template>
 
+<template name="solveDesignThinking">
+<div class="solveDesignThinkingActivity row">
+	{{> hello}}<br><br><br>
+	<h1 style="margin-left: 40px;">Design Thinking Activity</h1><br>
+	<div class="col-md-12">
+		<p class="col-md-2" style="display: inline">Module Code:</p>
+		<div class="col-md-3">
+			<input style="display: inline" type="text" id="module_id" class="form-control" placeholder="Enter Module Code here">
+		</div>
+		<p class="col-md-2 col-md-offset-1">Title of Activity:</p>
+		<div class="col-md-3">
+			<input style="display: inline" type="text" id="activity_title" class="form-control" placeholder="Enter title of the activity here">
+		</div>
+	</div><br><br>
+	<p class="col-md-12">
+		<div class="col-md-4"></div>
+		<button class="btn btn-primary col-md-4" id="getDesignThinkingActivity" style="display: inline;">Get Activity</button>
+	</p><br><br><br>
+	<div id="pageTabs" style="display: none;">
+		<!-- Nav tabs -->
+		<ul class="nav nav-tabs" role="tablist" id="tabsList">
+		</ul>
+
+		<!-- Tab panes -->
+		<div class="tab-content" id="tabsContent">
+		</div>
+
+	</div>
+</div>
+</template>
+
 <template name="questionTypeSelection">
 <div class="form-group">
 	<label for="{{question_number}}">Select list (select one):</label>
@@ -568,10 +601,10 @@
 </template>
 
 <template name="freehandSketching">
-<div class="form-group">
+<!--<div class="form-group">
 	<label style="color: black;">Title:</label>
 	<input type="text" class="form-control free_title" id="heading" placeholder="Enter the title here.">
-</div>
+</div>-->
 <hr>
 <span id="controls">Controls</span>
 <canvas id="canvas-display" style="display: 1px solid black;" width="650" height="300"></canvas>

@@ -76,7 +76,7 @@ if (Meteor.isServer) {
           data: data
         });
       } else {
-        DesignThinking.update({_id: id}, {data: data});
+        DesignThinking.update({_id: id}, {html: html, data: data});
       }
     }
   });

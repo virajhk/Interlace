@@ -21,6 +21,7 @@ Router.route('/modelAnswers');
 Router.route('/d3vis');
 Router.route('/answerAnalysis');
 Router.route('/designThinkingActivity');
+Router.route('/solveDesignThinking');
 
 // Break line
 /*Router.route('/', {
@@ -330,7 +331,12 @@ if (Meteor.isClient) {
     'click #designThinking': function(e) {
       e.preventDefault();
       window.location = 'designThinkingActivity';
-    }/*,
+    },
+    'click #solveDesignThinking': function(e) {
+      e.preventDefault();
+      window.location = 'solveDesignThinking';
+    }
+    /*,
     'change .myFileInput': function(event, template) {
       var source;
       FS.Utility.eachFile(event, function(file) {
@@ -872,6 +878,7 @@ Template.questionTypeSelection.events({
       document.getElementById(id.substr(1, id.length)).innerHTML = "";
       Blaze.renderWithData(Template.shortAnswerQuestions, {my: "data"}, $(id)[0]);
       Blaze.renderWithData(Template.shortAnswerQuestion, {my: "data"}, $(id)[0]);
+      shortAnswerQuestionsNumber[e.currentTarget.id.substr(3, e.currentTarget.id.length)] = 1;
     } else if (e.currentTarget.value == "Fill in the blanks") {
       document.getElementById(id.substr(1, id.length)).innerHTML = "";
       Blaze.renderWithData(Template.fillInTheBlanks, {my: "data"}, $(id)[0]);
@@ -991,7 +998,6 @@ Template.freehandSketching.onRendered(function() {
 
             $('#brush_size').change(function(e) {
               e.preventDefault();
-              console.log($(this).val());
               cntxt.lineWidth = $(this).val();
               //core.toggleScripts();
             });
@@ -1048,7 +1054,6 @@ Template.shortAnswerQuestion.events({
     var id = "#" + e.currentTarget.parentNode.id;
     Blaze.renderWithData(Template.shortAnswerQuestion, {my: "data"}, $(id)[0]);
 
-    console.log(shortAnswerQuestionsNumber[wordsToNumber(e.currentTarget.parentNode.id.substr(11, e.currentTarget.parentNode.id.length))]);
     if (shortAnswerQuestionsNumber[wordsToNumber(e.currentTarget.parentNode.id.substr(11, e.currentTarget.parentNode.id.length))] == null || shortAnswerQuestionsNumber[wordsToNumber(e.currentTarget.parentNode.id.substr(11, e.currentTarget.parentNode.id.length))] == undefined) {
       shortAnswerQuestionsNumber[wordsToNumber(e.currentTarget.parentNode.id.substr(11, e.currentTarget.parentNode.id.length))] = 2;
     } else {
@@ -1086,7 +1091,7 @@ Template.fillInTheBlanks.helpers({
     var id = "fillInTheBlanksQuestions" + numberToWords(analysis_question);
     return id;
   }
-})
+});
 
 Template.addAccordionField.helpers({
   question_number: function() {
@@ -1272,8 +1277,216 @@ Template.designThinkingActivity.events({
     var id = module_id + "_" + activity_title;
     var element = DesignThinking.find({_id: id}).fetch();
     var accordion = document.getElementById('accordion');
-    accordion.innerHTML = element[0].data;
+    accordion.innerHTML = element[0].html;
+    console.log(accordion);
     analysis_question = accordion.childNodes.length;
+
+    var data = element[0].data;
+
+    var selects = document.getElementsByTagName('select');
+    var desc = document.getElementsByClassName('desc');
+    var short_questions = document.getElementsByClassName('short_question');
+    var short_hints = document.getElementsByClassName('short_hints');
+    var short_title = document.getElementsByClassName('short_title');
+    var fill_title = document.getElementsByClassName('fill_title');
+    var fill_text = document.getElementsByClassName('fill_text');
+    var fill_hint = document.getElementsByClassName('fill_hint');
+    var free_title = document.getElementsByClassName('free_title');
+
+    var j=0;
+    var k=0;
+    var l=0;
+    var m=0;
+    var n=0;
+    var p=0;
+    var q=0;
+
+    for (var i=0; i<selects.length; i++) {
+      selects[i].value = data[i].questionType;
+      if (data[i].questionType == "Description Question") {
+        desc[j*2].value = data[i].title;
+        desc[j*2 + 1].value = data[i].question;
+        j++;
+      } else if (data[i].questionType == "Short Answer Question") {
+        short_title[k].value = data[i].title;
+        shortAnswerQuestionsNumber[i+1] = data[i].questions.length;
+        for (var x=0; x<data[i].questions.length; x++) {
+          short_questions[l].value = data[i].questions[x];
+          short_hints[l].value = data[i].hints[x];
+          l++;
+        }
+        k++;
+      } else if (data[i].questionType == "Fill in the blanks") {
+        fill_title[m].value = data[i].title;
+        fillInTheBlanksArray[i+1] = data[i].sequence;
+        var temp = 0;
+        var temp2 = 0;
+        for (var x=0; x<data[i].sequence.length; x++) {
+          if (data[i].sequence[x] == "t") {
+            fill_text[n].value = data[i].text[temp];
+            temp++;
+            n++;
+          } else {
+            fill_hint[p].value = data[i].hints[temp2];
+            temp2++;
+            p++;
+          }
+        }
+      } else if (data[i].questionType == "Freehand Sketching") {
+        free_title[q].value = data[i].title;
+        q++;
+      }
+    }
+  }
+});
+
+Template.solveDesignThinking.events({
+  'click #getDesignThinkingActivity': function(e) {
+    e.preventDefault();
+    $('#pageTabs').show();
+
+    var tabsList = document.getElementById('tabsList');
+    var tabsContent = document.getElementById('tabsContent');
+    var module_id = document.getElementById('module_id').value;
+    var activity_title = document.getElementById('activity_title').value;
+    var id = module_id + "_" + activity_title;
+    var element = DesignThinking.find({_id: id}).fetch()[0];
+
+    for (var i=0; i<element.data.length; i++) {
+      /* Populate tabsList */
+      var li = document.createElement("li");
+      var textValue = "Question " + (i+1).toString();
+      li.setAttribute("role", "presentation");
+      if (i == 0) {
+        li.setAttribute("class", "active");
+      }
+
+      var a = document.createElement("a");
+      a.setAttribute("href", "#question" + (i+1).toString());
+      a.setAttribute("aria-controls", "home");
+      a.setAttribute("role", "tab");
+      a.setAttribute("data-toggle", "tab");
+
+      a.appendChild(document.createTextNode(textValue));
+
+      li.appendChild(a);
+
+      tabsList.appendChild(li);
+      /* Populate tabsList end */
+
+      /* Populate tabsContent */
+      var div = document.createElement('div');
+      div.setAttribute("role", "tabpanel");
+      if (i == 0) {
+        div.setAttribute("class", "tab-pane active");
+      } else {
+        div.setAttribute("class", "tab-pane");
+      }
+      div.setAttribute("id", "question" + (i+1).toString());
+
+      if (element.data[i].questionType == "Description Question") {
+        var h3 = document.createElement('h3');
+        h3.appendChild(document.createTextNode(element.data[i].title));
+        div.appendChild(h3);
+
+        var h4 = document.createElement('h4');
+        var strong = document.createElement('strong');
+        h4.setAttribute("style", "color:black;");
+        strong.appendChild(document.createTextNode(element.data[i].question));
+        h4.appendChild(strong);
+        div.appendChild(h4);
+
+        var textarea = document.createElement('textarea');
+        textarea.setAttribute("type", "text");
+        textarea.setAttribute("class", "form-control");
+        textarea.setAttribute("rows", "10");
+        textarea.setAttribute("class", "desc");
+        textarea.setAttribute("placeholder", "Enter your answer here");
+        textarea.setAttribute("style", "min-width:80%;");
+
+        div.appendChild(textarea);
+      } else if (element.data[i].questionType == "Short Answer Question") {
+        var h3 = document.createElement('h3');
+        h3.appendChild(document.createTextNode(element.data[i].title));
+        div.appendChild(h3);
+
+        for (var j=0; j<element.data[i].questions.length; j++) {
+          var h4 = document.createElement('h4');
+          var strong = document.createElement('strong');
+          h4.setAttribute("style", "color:black; display:inline;");
+          strong.appendChild(document.createTextNode(element.data[i].questions[j]));
+          h4.appendChild(strong);
+          div.appendChild(h4);
+
+          var p = document.createElement('p');
+          p.setAttribute("style", "color:black; display:inline;");
+          p.appendChild(document.createTextNode(" (Hint: " + element.data[i].hints[j] + ")"));
+          div.appendChild(p);
+          div.appendChild(document.createElement('br'));
+          div.appendChild(document.createElement('br'));
+
+          var textarea = document.createElement('textarea');
+          textarea.setAttribute("type", "text");
+          textarea.setAttribute("class", "form-control");
+          textarea.setAttribute("rows", "5");
+          textarea.setAttribute("class", "short");
+          textarea.setAttribute("placeholder", "Enter your answer here");
+          textarea.setAttribute("style", "min-width:80%;");
+
+          div.appendChild(textarea);
+          div.appendChild(document.createElement('br'));
+          div.appendChild(document.createElement('br'));
+        }
+
+      } else if (element.data[i].questionType == "Fill in the blanks") {
+        var h3 = document.createElement('h3');
+        h3.appendChild(document.createTextNode(element.data[i].title));
+        div.appendChild(h3);
+
+        var k=0;
+        for (var j=0; j<element.data[i].sequence.length; j++) {
+          if (element.data[i].sequence[j] == "t") {
+            var h4 = document.createElement('h4');
+            var strong = document.createElement('strong');
+            h4.setAttribute("style", "color:black; display:inline;");
+            strong.appendChild(document.createTextNode(element.data[i].text[k]));
+            h4.appendChild(strong);
+            div.appendChild(h4);
+
+            var p = document.createElement('p');
+            p.setAttribute("style", "color:black; display:inline;");
+            p.appendChild(document.createTextNode(" (Hint: " + element.data[i].hints[k] + ")"));
+            div.appendChild(p);
+            div.appendChild(document.createElement('br'));
+            div.appendChild(document.createElement('br'));
+            k++;
+          } else {
+            var textarea = document.createElement('textarea');
+            textarea.setAttribute("type", "text");
+            textarea.setAttribute("class", "form-control");
+            textarea.setAttribute("rows", "1");
+            textarea.setAttribute("class", "fill");
+            textarea.setAttribute("placeholder", "Enter your answer here");
+            textarea.setAttribute("style", "min-width:80%;");
+
+            div.appendChild(textarea);
+            div.appendChild(document.createElement('br'));
+            div.appendChild(document.createElement('br'));
+          }
+        }
+      } else if (element.data[i].questionType == "Freehand Sketching") {
+        var h3 = document.createElement('h3');
+        h3.appendChild(document.createTextNode(element.data[i].title));
+        div.appendChild(h3);
+      }
+
+      tabsContent.appendChild(div);
+
+      if (element.data[i].questionType == "Freehand Sketching") {
+        Blaze.renderWithData(Template.freehandSketching, {my: "data"}, $("#question" + (i+1).toString())[0]);
+      }
+      /* Populate tabsContent end */
+    }
   }
 });
 
@@ -1756,5 +1969,154 @@ function wordsToNumber(s) {
   }
 }
 
+function canvasProperties() {
+    (function($) {
+    $.fn.paintBrush = function(options) {
+      var undoHistory = [];
+      var settings = {
+          'targetID': 'canvas-display'
+        },
 
+        $this = $(this),
+        o = {},
+        ui = {},
 
+        core = {
+          init: function(options) {
+            ui.$loadParentDiv = o.targetID;
+            core.draw();
+            core.controls();
+            //core.toggleScripts();
+          },
+
+          canvasInit: function() {
+            context = document.getElementById("canvas-display").getContext("2d");
+            context.lineCap = "round";
+            //Fill it with white background
+            context.save();
+            context.fillStyle = '#fff';
+            context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+            context.restore();
+          },
+
+          saveActions: function() {
+            var imgData = document.getElementById("canvas-display").toDataURL("image/png");
+            undoHistory.push(imgData);
+            $('#undo').removeAttr('disabled');
+
+          },
+
+          undoDraw: function() {
+            if (undoHistory.length > 0) {
+              var undoImg = new Image();
+              $(undoImg).load(function() {
+                var context = document.getElementById("canvas-display").getContext("2d");
+                context.drawImage(undoImg, 0, 0);
+              });
+              undoImg.src = undoHistory.pop();
+              if (undoHistory.length == 0)
+                $('#undo').attr('disabled', 'disabled');
+            }
+          },
+
+          draw: function() {
+            var canvas, cntxt, top, left, draw, draw = 0;
+            canvas = document.getElementById("canvas-display");
+            cntxt = canvas.getContext("2d");
+            top = $('#canvas-display').offset().top;
+            left = $('#canvas-display').offset().left;
+            core.canvasInit();
+
+            //Drawing Code
+            $('#canvas-display').mousedown(function(e) {
+                if (e.button == 0) {
+                  draw = 1;
+                  core.saveActions(); //Start The drawing flow. Save the state
+                  cntxt.beginPath();
+                  cntxt.moveTo(e.pageX - left, e.pageY - top);
+                } else {
+                  draw = 0;
+                }
+              })
+              .mouseup(function(e) {
+                if (e.button != 0) {
+                  draw = 1;
+                } else {
+                  draw = 0;
+                  cntxt.lineTo(e.pageX - left + 1, e.pageY - top + 1);
+                  cntxt.stroke();
+                  cntxt.closePath();
+                }
+              })
+              .mousemove(function(e) {
+                if (draw == 1) {
+                  cntxt.lineTo(e.pageX - left + 1, e.pageY - top + 1);
+                  cntxt.stroke();
+                }
+              });
+
+          },
+
+          controls: function() {
+            canvas = document.getElementById("canvas-display");
+            cntxt = canvas.getContext("2d");
+            $('#export').click(function(e) {
+              e.preventDefault();
+              window.open(canvas.toDataURL(), 'Canvas Export', 'height=400,width=400');
+            });
+
+            $('#clear').click(function(e) {
+              e.preventDefault();
+              canvas.width = canvas.width;
+              canvas.height = canvas.height;
+              core.canvasInit();
+              $('#colors li:first').click();
+              $('#brush_size').change();
+              //core.toggleScripts();
+              undoHistory = [];
+            });
+
+            $('#brush_size').change(function(e) {
+              e.preventDefault();
+              cntxt.lineWidth = $(this).val();
+              //core.toggleScripts();
+            });
+
+            $('#colors li').click(function(e) {
+              e.preventDefault();
+              $('#colors li').removeClass('selected');
+              $(this).addClass('selected');
+              cntxt.strokeStyle = $(this).css('background-color');
+              //core.toggleScripts();
+            });
+
+            //Undo Binding
+            $('#undo').click(function(e) {
+              e.preventDefault();
+              core.undoDraw()
+              //core.toggleScripts();
+            });
+
+            //Init the brush and color
+            $('#colors li:first').click();
+            $('#brush_size').change();
+
+            $('#controls').click(function() {
+              core.toggleScripts();
+            });
+          },
+
+          toggleScripts: function() {
+            $('#colors').slideToggle(400);
+            $('#control-buttons').toggle(400);
+          }
+        };
+
+      $.extend(true, o, settings, options);
+
+      core.init();
+
+    };
+  })($);
+  $('#canvas-display').paintBrush();
+}
