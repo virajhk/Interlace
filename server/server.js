@@ -30,6 +30,10 @@ if (Meteor.isServer) {
     return Images.find({}); 
   });
 
+  Meteor.publish('messages', function(){ 
+    return Messages.find({}); 
+  });
+
   Meteor.methods({
     saveAssignment: function(id, data) {
       Assignments.insert({
@@ -46,9 +50,9 @@ if (Meteor.isServer) {
     createNotification: function() {
       BrowserNotifications.insert({
         userId: 'iPiA77GynvxLJ8srf',
-        title: "www.google.com",
-        body: "www.google.com",
-        url: "editQuiz",
+        title: "Interlace - Design Thinking Activity",
+        body: "Design Thinking Activity is now open.",
+        url: "http://localhost:3000/solveDesignThinking",
         shown: false
       });
     },
@@ -78,6 +82,11 @@ if (Meteor.isServer) {
       } else {
         DesignThinking.update({_id: id}, {html: html, data: data});
       }
+    },
+    deleteDesignThinking: function(id) {
+      DesignThinking.remove({
+        _id: id
+      });
     }
   });
 

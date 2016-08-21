@@ -22,6 +22,10 @@ Router.route('/d3vis');
 Router.route('/answerAnalysis');
 Router.route('/designThinkingActivity');
 Router.route('/solveDesignThinking');
+Router.route('/studentGroups');
+Router.route('/faqs');
+Router.route('/about');
+Router.route('/contact');
 
 // Break line
 /*Router.route('/', {
@@ -46,6 +50,8 @@ BrowserNotifications = new Mongo.Collection("browserNotifications");
 
 DesignThinking = new Mongo.Collection("designThinking");
 
+Messages = new Meteor.Collection('messages');
+
 var imageStore = new FS.Store.GridFS("images");
 
 Images = new FS.Collection("images", {
@@ -68,6 +74,15 @@ Images.allow({
 });
 
 if (Meteor.isClient) {
+
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-75937195-1', 'auto');
+  ga('send', 'pageview');
+
   //Break Line
   Session.setDefault('studentId', 'A0105522W');
   Session.setDefault('assignment_id', '1')
@@ -247,6 +262,7 @@ if (Meteor.isClient) {
   Meteor.subscribe('getNotifications');
   Meteor.subscribe('getDesignThinking');
   Meteor.subscribe('images');
+  Meteor.subscribe('messages');
 
   //Meteor.call('createNotification');
 
@@ -373,6 +389,15 @@ if (Meteor.isClient) {
     'click #existing': function () {
       setCookie('firstLogin', false);
       window.location.reload(true);
+    },
+    'click #faqs': function () {
+      window.location = "faqs";
+    },
+    'click #about': function () {
+      window.location = "about";
+    },
+    'click #contact': function () {
+      window.location = "contact";
     }
   });
 
@@ -387,10 +412,18 @@ if (Meteor.isClient) {
 
   Template.firstPage.helpers({
     lecturerCheck: function() {
-      return getCookie('lecturer');
+      if (getCookie('lecturer') == "false") {
+        return false;
+      } else {
+        return true;
+      }
     },
     studentCheck: function() {
-      return getCookie('student');
+      if (getCookie('student') == "false") {
+        return false;
+      } else {
+        return true;
+      }
     }
   });
 
@@ -407,6 +440,14 @@ if (Meteor.isClient) {
       e.preventDefault();
 
       saveAssignment(questionArray, answerArray, mcqOptionsArray, imageArray, "new");
+      toastr.success("ALE saved successfully", "Success");
+    },
+    'click #delete_assignment': function (e) {
+      e.preventDefault();
+      if (confirm("Are you sure you want to delete this ALE")) {
+        toastr.success("ALE deleted successfully", "Success");
+        location.reload();
+      }
     }
   });
 
@@ -746,6 +787,7 @@ Template.editQuiz.events({
       e.preventDefault();
       if (confirm('Are you sure you want to save the changes to the ALE?')) {
         saveAssignment(questionArray, answerArray, mcqOptionsArray, imageArray, "edit");
+        toastr.success("ALE edited successfully", "Success");
       }
     }
 });
@@ -1041,6 +1083,158 @@ Template.freehandSketching.onRendered(function() {
   $('#canvas-display').paintBrush();
 });
 
+Template.canvas.onRendered(function() {
+  (function($) {
+    $.fn.paintBrush = function(options) {
+      var undoHistory = [];
+      var settings = {
+          'targetID': 'canvas-display2'
+        },
+
+        $this = $(this),
+        o = {},
+        ui = {},
+
+        core = {
+          init: function(options) {
+            ui.$loadParentDiv = o.targetID;
+            core.draw();
+            core.controls();
+            //core.toggleScripts();
+          },
+
+          canvasInit: function() {
+            context = document.getElementById("canvas-display2").getContext("2d");
+            context.lineCap = "round";
+            //Fill it with white background
+            context.save();
+            context.fillStyle = '#fff';
+            context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+            context.restore();
+          },
+
+          saveActions: function() {
+            var imgData = document.getElementById("canvas-display2").toDataURL("image/png");
+            undoHistory.push(imgData);
+            $('#undo').removeAttr('disabled');
+
+          },
+
+          undoDraw: function() {
+            if (undoHistory.length > 0) {
+              var undoImg = new Image();
+              $(undoImg).load(function() {
+                var context = document.getElementById("canvas-display2").getContext("2d");
+                context.drawImage(undoImg, 0, 0);
+              });
+              undoImg.src = undoHistory.pop();
+              if (undoHistory.length == 0)
+                $('#undo').attr('disabled', 'disabled');
+            }
+          },
+
+          draw: function() {
+            var canvas, cntxt, top, left, draw, draw = 0;
+            canvas = document.getElementById("canvas-display2");
+            cntxt = canvas.getContext("2d");
+            top = $('#canvas-display2').offset().top;
+            left = $('#canvas-display2').offset().left;
+            core.canvasInit();
+
+            //Drawing Code
+            $('#canvas-display2').mousedown(function(e) {
+                if (e.button == 0) {
+                  draw = 1;
+                  core.saveActions(); //Start The drawing flow. Save the state
+                  cntxt.beginPath();
+                  cntxt.moveTo(e.pageX - left, e.pageY - top);
+                } else {
+                  draw = 0;
+                }
+              })
+              .mouseup(function(e) {
+                if (e.button != 0) {
+                  draw = 1;
+                } else {
+                  draw = 0;
+                  cntxt.lineTo(e.pageX - left + 1, e.pageY - top + 1);
+                  cntxt.stroke();
+                  cntxt.closePath();
+                }
+              })
+              .mousemove(function(e) {
+                if (draw == 1) {
+                  cntxt.lineTo(e.pageX - left + 1, e.pageY - top + 1);
+                  cntxt.stroke();
+                }
+              });
+
+          },
+
+          controls: function() {
+            canvas = document.getElementById("canvas-display2");
+            cntxt = canvas.getContext("2d");
+            $('#export').click(function(e) {
+              e.preventDefault();
+              window.open(canvas.toDataURL(), 'Canvas Export', 'height=400,width=400');
+            });
+
+            $('#clear').click(function(e) {
+              e.preventDefault();
+              canvas.width = canvas.width;
+              canvas.height = canvas.height;
+              core.canvasInit();
+              $('#colors li:first').click();
+              $('#brush_size').change();
+              //core.toggleScripts();
+              undoHistory = [];
+            });
+
+            $('#brush_size').change(function(e) {
+              e.preventDefault();
+              cntxt.lineWidth = $(this).val();
+              //core.toggleScripts();
+            });
+
+            $('#colors li').click(function(e) {
+              e.preventDefault();
+              $('#colors li').removeClass('selected');
+              $(this).addClass('selected');
+              cntxt.strokeStyle = $(this).css('background-color');
+              //core.toggleScripts();
+            });
+
+            //Undo Binding
+            $('#undo').click(function(e) {
+              e.preventDefault();
+              core.undoDraw()
+              //core.toggleScripts();
+            });
+
+            //Init the brush and color
+            $('#colors li:first').click();
+            $('#brush_size').change();
+
+            $('#controls').click(function() {
+              core.toggleScripts();
+            });
+          },
+
+          toggleScripts: function() {
+            $('#colors').slideToggle(400);
+            $('#control-buttons').toggle(400);
+          }
+        };
+
+      $.extend(true, o, settings, options);
+
+      core.init();
+
+    };
+  })($);
+  $('#canvas-display2').paintBrush();
+});
+
 Template.addSubParts.events({
   'click .click': function(e) {
     console.log(e.currentTarget.id);
@@ -1262,6 +1456,17 @@ Template.designThinkingActivity.events({
     }
 
     Meteor.call('saveDesignThinking', id, accordionInnerHtml, questionValues);
+    Meteor.call('createNotification');
+    toastr.success("Activity saved successfully", "Success");
+  },
+  'click #delete_designThinking' : function(e) {
+    e.preventDefault();
+    var id = module_id + "_" + activity_title;
+    if (confirm("Are you sure?") == true) {
+      Meteor.call('deleteDesignThinking', id);
+      toastr.success("Activity deleted successfully", "Success");
+      location.reload();
+    }
   },
   'click #new_designThinking': function (e) {
     e.preventDefault();
@@ -1341,6 +1546,10 @@ Template.designThinkingActivity.events({
 });
 
 Template.solveDesignThinking.events({
+  'click #save_solveDesignThinking' : function(e) {
+    e.preventDefault();
+    toastr.success('Answer recorded successfully', 'Success');
+  },
   'click #getDesignThinkingActivity': function(e) {
     e.preventDefault();
     $('#pageTabs').show();
@@ -1483,7 +1692,7 @@ Template.solveDesignThinking.events({
       tabsContent.appendChild(div);
 
       if (element.data[i].questionType == "Freehand Sketching") {
-        Blaze.renderWithData(Template.freehandSketching, {my: "data"}, $("#question" + (i+1).toString())[0]);
+        Blaze.renderWithData(Template.canvas, {my: "data"}, $("#question" + (i+1).toString())[0]);
       }
       /* Populate tabsContent end */
     }
@@ -1510,6 +1719,33 @@ function getCanvas(form, a4){
       console.log(allALEs);
     }
 });*/
+
+/*Chat application*/
+Template.messages.helpers({
+    messages: function() {
+        return Messages.find({}, { sort: { time: -1}});
+    }
+});
+
+Template.input.events = {
+  'keydown input#message' : function (event) {
+    if (event.which == 13) { // 13 is the enter key event
+      var name = Meteor.user().username;
+      var message = document.getElementById('message');
+      if (message.value != '') {
+        Messages.insert({
+          name: name,
+          message: message.value,
+          time: Date.now(),
+        });
+
+        document.getElementById('message').value = '';
+        message.value = '';
+      }
+    }
+  }
+}
+
 
 Template.d3vis.onRendered(function () {
 
@@ -1642,9 +1878,10 @@ Template.d3vis.onRendered(function () {
                 body: notifications[i].body,
               });
 
-              notification.onclick = function () {
+              /*notification.onclick = function (e) {
+                e.preventDefault();
                 window.open(notifications[i].url);      
-              };
+              };*/
 
               Meteor.call('markNotificationAsTrue', notifications[i]._id, notifications[i].userId, notifications[i].title, notifications[i].body, notifications[i].url);
             }
@@ -1715,10 +1952,12 @@ function Populate_UserId() {
   jQuery.getJSON(url, function (data) {
       setCookie('userId', data);    //document.cookie="userId="+data;
       
-      if (/^[a-zA-Z]+$/.test(data)) {
+      if ((/^[a-zA-Z]+$/.test(data))) {
           setCookie('lecturer', true);
+          setCookie('student', false);
       } else {
           setCookie('student', true);
+          setCookie('lecturer', false);
       }
   });
 }

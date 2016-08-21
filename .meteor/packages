@@ -4,16 +4,32 @@
 # 'meteor add' and 'meteor remove' will edit this file for you,
 # but you can also edit it by hand.
 
-meteor-platform
-insecure
+insecure@1.0.7
 twbs:bootstrap
 iron:router
 d3js:d3
 cfs:standard-packages
 cfs:filesystem
-accounts-ui
-accounts-password
+accounts-ui@1.1.9
+accounts-password@1.3.0
 cfs:gridfs
 mrt:lightbox2
 chipcastledotcom:jspdf
 new3rs:html2canvas
+chrismbeckett:toastr
+meteor-base
+mobile-experience
+mongo
+blaze-html-templates
+session
+jquery
+tracker
+logging
+reload
+random
+ejson
+spacebars
+check
+standard-minifier-css
+standard-minifier-js
+shell-server

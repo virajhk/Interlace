@@ -83,7 +83,7 @@ aside {
     padding: 0;
 }
 
-.navbar-default {
+/*.navbar-default {
     border-color: rgba(34,34,34,.05);
     font-family: 'Open Sans','Helvetica Neue',Arial,sans-serif;
     background-color: #fff;
@@ -126,12 +126,67 @@ aside {
 .navbar-default .nav > li.active>a:hover,
 .navbar-default .nav>li.active>a:focus:hover {
     background-color: transparent;
+}*/
+
+.navbar-default {
+    background-color: #315481;
+    /*border-color: transparent;*/
 }
+
+    .navbar-default .navbar-brand {
+        color: #ff3333;
+        font-family: "Kaushan Script","Helvetica Neue",Helvetica,Arial,cursive;
+    }
+
+        .navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus, .navbar-default .navbar-brand:active, .navbar-default .navbar-brand.active {
+            color: #ff3333;
+        }
+
+    .navbar-default .navbar-collapse {
+        border-color: #315481;
+    }
+
+    .navbar-default .navbar-toggle {
+        background-color: #ff3333;
+        border-color: #ff3333;
+    }
+
+        .navbar-default .navbar-toggle .icon-bar {
+            background-color: #000;
+        }
+
+        .navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus {
+            background-color: #ff3333;
+        }
+
+    .navbar-default .nav li a {
+        font-family: Montserrat,"Helvetica Neue",Helvetica,Arial,sans-serif;
+        text-transform: uppercase;
+        font-weight: 400;
+        letter-spacing: 1px;
+        color: #000;
+    }
+
+        .navbar-default .nav li a:hover, .navbar-default .nav li a:focus {
+            color: #ff3333;
+            outline: 0;
+        }
+
+    .navbar-default .navbar-nav > .active > a {
+        border-radius: 0;
+        color: #000;
+        background-color: #ff3333;
+    }
+
+        .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+            color: #000;
+            background-color: #ff3333;
+        }
 
 @media(min-width:768px) {
     .navbar-default {
         border-color: rgba(255,255,255,.3);
-        background-color: transparent;
+        /*background-color: transparent;*/
     }
 
     .navbar-default .navbar-header .navbar-brand {
@@ -140,7 +195,7 @@ aside {
 
     .navbar-default .navbar-header .navbar-brand:hover,
     .navbar-default .navbar-header .navbar-brand:focus {
-        color: #fff;
+        color: #000;
     }
 
     .navbar-default .nav > li>a,
@@ -150,12 +205,12 @@ aside {
 
     .navbar-default .nav > li>a:hover,
     .navbar-default .nav>li>a:focus:hover {
-        color: #fff;
+        color: #000;
     }
 
     .navbar-default.affix {
         border-color: rgba(34,34,34,.05);
-        background-color: #fff;
+        background-color: #000;
     }
 
     .navbar-default.affix .navbar-header .navbar-brand {
@@ -439,6 +494,12 @@ background-color: rgb(72, 168, 67);
 }
 
 #canvas-display {
+  border: solid 1px black;
+  cursor: crosshair;
+  float: left;
+}
+
+#canvas-display2 {
   border: solid 1px black;
   cursor: crosshair;
   float: left;

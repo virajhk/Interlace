@@ -6,29 +6,6 @@
 
 </body>
 
-<template name="commonLanding">
-	<header>
-        <div class="header-content">
-            <div class="header-content-inner">
-                <h1>The newest collaborative learning platform</h1>
-                <hr>
-                <p>Interlace is designed to facilitate in-class collaboration learning through various activities, quizzes and discussions.</p>
-                <!--<input type="file" name="fileUpload" class="myFileInput">
-                <img id="imageTest" alt="Smiley face" height="100" width="100">-->
-                <a href="#about" class="btn btn-primary btn-xl page-scroll">Find Out More</a><br><br>
-                {{#if lecturerCheck}}
-					<h1 hidden>Lecturer</h1><br><br>
-				{{else}}
-					{{#if studentCheck}}
-						<h1 hidden>Student</h1><br><br>
-					{{/if}}
-				{{/if}}
-			</div>
-		</div>
-	</header>
-	{{> hello}}
-</template>
-
 <template name="hello">
 	<nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
         <div class="container-fluid">
@@ -40,36 +17,32 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand page-scroll" href="#page-top" id="home">Interlace</a>
+                <a class="navbar-brand page-scroll" href="#page-top" id="home">INTERLACE</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a class="page-scroll" href="#about">About</a>
+                        <a class="page-scroll" id="contact" style="cursor: pointer;">Contact</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#services">Services</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#contact">Contact</a>
+                        <a class="page-scroll" id="faqs" style="cursor: pointer;">FAQs</a>
                     </li>
                     {{#unless firstLogin}}
 	                    {{#unless loginCheck}}
 	                    	<li class="dropdown">
-								<a lass="dropdown-toggle" data-toggle="dropdown">Sign In</a>
+								<a class="dropdown-toggle" data-toggle="dropdown" style="cursor: pointer;">Sign In</a>
 								<ul class="dropdown-menu">
-									<li><a id="login">New User</a></li>
-									<li><a id="existing">Existing User</a></li>
+									<li><a id="login" style="cursor: pointer; color: #000;">New User</a></li>
+									<li><a id="existing" style="cursor: pointer; color: #000;">Existing User</a></li>
 								</ul>
 							</li>
 						{{else}}
 							<li class="dropdown">
 								<a href="#" class="dropdown-toggle" data-toggle="dropdown" id="lbl_Name"></a>
 								<ul class="dropdown-menu">
-									<li><a href="#">Profile</a></li>
-									<li><a id="logout">Logout</a></li>
+									<li><a id="logout" style="cursor: pointer; color: #000;">Logout</a></li>
 								</ul>
 							</li>
 						{{/unless}}
@@ -84,39 +57,6 @@
         </div>
         <!-- /.container-fluid -->
     </nav>
-
-	<!--<div class="container">
-		<div class="jumbotron">
-			<div class="header_title">
-				<h1>Interlace</h1>
-				<p>THE NEWEST LEARNING PLATFORM</p> 
-			</div>
-			<div class="header_nav">
-				<ul id="nav">
-					{{#unless loginCheck}}
-						<a id="login">Login</a>
-					{{else}}
-						<li class="dropdown">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown" id="lbl_Name"></a>
-							<ul class="dropdown-menu">
-								<li><a href="#">Profile</a></li>
-								<li><a id="logout">Logout</a></li>
-							</ul>
-						</li>
-					{{/unless}}
-
-					<li>
-						<a id="home"><span class="glyphicon glyphicon-home"></span></a>
-					</li>
-					<li>
-						<a href="#">
-							<span class="glyphicon glyphicon-bell"></span>
-						</a>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</div>-->
 </template>
 
 <template name="firstPage">
@@ -128,7 +68,7 @@
                 <p>Interlace is designed to facilitate in-class collaboration learning through various activities, quizzes and discussions.</p>
                 <!--<input type="file" name="fileUpload" class="myFileInput">
                 <img id="imageTest" alt="Smiley face" height="100" width="100">-->
-                <a href="#about" class="btn btn-primary btn-xl page-scroll">Find Out More</a><br><br>
+                <br><br>
                 {{#if lecturerCheck}}
 					<h1 hidden>Lecturer</h1><br><br>
 				{{else}}
@@ -144,14 +84,12 @@
 				</div>
 				<div class="col-md-12">
 					<p class="col-md-1" style="margin-right:55px;"></p>
-					<button class="btn btn-default col-md-4" id="getModelAnswers">Get Model Answers</button>
-					<p class="col-md-1"></p>
 					<button class="btn btn-default col-md-4" id="getAnalysis">Get Answer Analysis</button>
+					<p class="col-md-1"></p>
+					<button class="btn btn-default col-md-4" id="designThinking">Design Thinking Activity</button>
 				</div>
 				<div class="col-md-12">
 					<p class="col-md-1" style="margin-right:55px;"></p>
-					<button class="btn btn-default col-md-4" id="designThinking">Design Thinking Activity</button>
-					<p class="col-md-1"></p>
 					<button class="btn btn-default col-md-4" id="solveDesignThinking">Solve Design Thinking</button>
 				</div><br><br>
             </div>
@@ -159,6 +97,72 @@
     </header>
 	{{> hello}}
 	<!--<button class="btn btn-default" id="releaseQuiz">Release Quiz</button>-->
+</template>
+
+<template name="faqs">
+	<div class="quizQuestions row">
+		{{> hello}}<br><br><br>
+		<h1 style="margin-left: 40px;">FAQs</h1>
+		<br>
+		<div class="col-md-12">
+			<h3 style="align-content: left; text-align: left; margin-left: 40px;">1. How to create a design thinking activity?</h3><br>
+			<h4 style="color: #000; align-content: left; text-align: left; margin-left: 40px;">Follow the steps below to get an understanding of how to use the design thinking activity page:</h4>
+			<ol style="align-content: left; text-align: left; margin-left: 40px;">
+				<li style="color: #000;font-size: 16px">Enter the Module code and Title of activity.</li><br>
+				<li style="color: #000;font-size: 16px">Then choose whether you want to "Create New Activity" or "Retrieve an existing activity".</li><br>
+				<li style="color: #000;font-size: 16px">Now choose to either add a question or edit an existing one.</li><br>
+				<li style="color: #000;font-size: 16px">If you choose to add a new question, choose the type of question.</li><br>
+				<li style="color: #000;font-size: 16px">Depending on the question type, fill in the required information for the question.</li><br>
+				<li style="color: #000;font-size: 16px">Once you are done creating/editing the activity, click on the Save Activity button to save it in the database.</li><br>
+			</ol>
+		</div>
+		<div class="col-md-12">
+			<h3 style="align-content: left; text-align: left; margin-left: 40px;">2. How to get student answer analysis?</h3><br>
+			<h4 style="color: #000; align-content: left; text-align: left; margin-left: 40px;">Follow the steps below to get an understanding of how to get student answer analysis:</h4>
+			<ol style="align-content: left; text-align: left; margin-left: 40px;">
+				<li style="color: #000;font-size: 16px">Enter the Module code, Lecture number and ALE number.</li><br>
+				<li style="color: #000;font-size: 16px">Then click the "Get Answer Analysis" button.</li><br>
+				<li style="color: #000;font-size: 16px">The questions will be shown in an accordion format. Choose the question you want to view analysis for.</li><br>
+				<li style="color: #000;font-size: 16px">Currently, for MCQs, a graph visualization would show up showing how many students have answered which option. The correct answer would be shown below.</li><br>
+				<li style="color: #000;font-size: 16px">For short answer questions, we plan to introduce NLP in the next version.</li><br>
+			</ol>
+		</div>
+		<div class="col-md-12">
+			<h3 style="align-content: left; text-align: left; margin-left: 40px;">More questions coming soon!</h3><br>
+		</div>
+	</div>
+</template>
+
+<template name="contact">
+	<div class="quizQuestions row">
+		{{> hello}}<br><br><br>
+		<h1 style="margin-left: 40px;">Contact</h1>
+		<br><br>
+		<div class="col-md-3">
+			<img src="/img/bimlesh.jpg" height="100" class="img-responsive img-circle">
+			<h3>Dr. Bimlesh Wadhwa</h3>
+			<h4>Supervisor</h4>
+			<a href="mailto:bimlesh@nus.edu.sg">bimlesh@nus.edu.sg</a>
+		</div>
+		<div class="col-md-3">
+			<img src="/img/viraj.jpg" height="100" class="img-responsive img-circle">
+			<h3>Viraj Khuthia</h3>
+			<h4>Lecturer-Client Developer</h4>
+			<a href="mailto:virajhk@gmail.com">virajhk@gmail.com</a>
+		</div>
+		<div class="col-md-3">
+			<img src="/img/juhi.jpg" height="100" class="img-responsive img-circle">
+			<h3>Juhi Simanthika</h3>
+			<h4>Backend Developer</h4>
+			<a href="mailto:juhi37@gmail.com">juhi37@gmail.com</a>
+		</div>
+		<div class="col-md-3">
+			<img src="/img/xuchen.jpg" height="100" class="img-responsive img-circle">
+			<h3>Xu Chen</h3>
+			<h4>Student-Client Developer</h4>
+			<a href="mailto:eigenmatrixrepair@gmail.com">eigenmatrixrepair@gmail.com</a>
+		</div>
+	</div>
 </template>
 
 <template name="mcq_single">
@@ -256,8 +260,10 @@
 				<div class="col-md-1"></div>
 			</p>
 			<p class="col-md-12">
-				<div class="col-md-4"></div>
+				<div class="col-md-1"></div>
 				<button class="btn btn-success col-md-4" id="save_assignment">Save Assignment</button>
+				<div class="col-md-2"></div>
+				<button class="btn btn-danger col-md-4" id="delete_assignment" style="display: inline;">Delete Activity</button>
 			</p>
 		</form>
 	</div>
@@ -342,7 +348,7 @@
 <template name="answerAnalysis">
 	<div class="answerAnalysis row">
 		{{> hello}}<br><br><br>
-		<h1 style="margin-left: 40px;">Get Model Answers File</h1>
+		<h1 style="margin-left: 40px;">Get Answer Analysis</h1>
 		<h3 style="margin-left: 40px;">Please enter the module code, lecture number and ALE number.</h3><br>
 		<form name="quiz">
 			<div class="col-md-12">
@@ -404,9 +410,9 @@
 
 <template name="notice">
   <div id="notice">
-    <h5>COMING SOON!</h5>
+    <h5>COMING SOON! Natural Language Processing</h5>
+    <img src="/img/nlp.png">
   </div>
-  <p class="pBlack">Model Answer: {{model_answer}}</p>
 </template>
 
 <template name="addAccordionField">
@@ -480,8 +486,10 @@
 		</div><br>
 		<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="false"></div>
 		<p class="col-md-12">
-			<div class="col-md-4"></div>
+			<div class="col-md-1"></div>
 			<button class="btn btn-success col-md-4" id="save_designThinking" style="display: inline;">Save Activity</button>
+			<div class="col-md-2"></div>
+			<button class="btn btn-danger col-md-4" id="delete_designThinking" style="display: inline;">Delete Activity</button>
 		</p><br><br>
 	</form>
 </div>
@@ -515,6 +523,10 @@
 		</div>
 
 	</div>
+	<p class="col-md-12">
+		<div class="col-md-4"></div>
+		<button class="btn btn-success col-md-4" id="save_solveDesignThinking" style="display: inline;">Save Answer</button>
+	</p>
 </div>
 </template>
 
@@ -601,12 +613,12 @@
 </template>
 
 <template name="freehandSketching">
-<!--<div class="form-group">
+<div class="form-group">
 	<label style="color: black;">Title:</label>
 	<input type="text" class="form-control free_title" id="heading" placeholder="Enter the title here.">
-</div>-->
+</div>
 <hr>
-<span id="controls">Controls</span>
+<!--<span id="controls">Controls</span>
 <canvas id="canvas-display" style="display: 1px solid black;" width="650" height="300"></canvas>
 <br/>
 <ul id="colors">
@@ -639,7 +651,70 @@
     <br />
     <input name="brush" id="brush_size" type="range" value="5" min="1" max="20" />
   </div>
+</div>-->
+</template>
+
+<template name="canvas">
+<span id="controls">Controls</span>
+<canvas id="canvas-display2" style="display: 1px solid black;" width="650" height="300"></canvas>
+<br/>
+<ul id="colors">
+  <li style="background-color:black;"> </li>
+  <li style="background-color:red;"> </li>
+  <li style="background-color:green;"> </li>
+  <li style="background-color:orange;"> </li>
+  <li style="background-color:brown;"> </li>
+  <li style="background-color:#d2232a;"> </li>
+  <li style="background-color:#fcb017;"> </li>
+  <li style="background-color:#fff460;"> </li>
+  <li style="background-color:#9ecc3b;"> </li>
+  <li style="background-color:#fcb017;"> </li>
+  <li style="background-color:#fff460;"> </li>
+  <li style="background-color:#F43059;"> </li>
+  <li style="background-color:#82B82C;"> </li>
+  <li style="background-color:#0099FF;"> </li>
+  <li style="background-color:#ff00ff;"> </li>
+</ul>
+<br style="clear:both;" />
+<br style="clear:both;" />
+<div id="control-buttons">
+  <div style="float:left;">
+    <button id="undo" href="#" disabled="disabled">Undo</button>
+    <button id="clear" href="#">Reset</button>
+    <button id="export" href="#">Save as Image</button>
+  </div>
+  <div style="float:left;margin-left: 22px;text-align: center;width: 130px;">
+    Brush Size:
+    <br />
+    <input name="brush" id="brush_size" type="range" value="5" min="1" max="20" />
+  </div>
 </div>
+</template>
+
+<template name="studentGroups">
+	<div class="quizQuestions row">
+		{{> hello}}<br><br><br>
+		<h1>Chatapp</h1>
+	  {{> welcome }}
+	  {{> input }}
+	  {{> messages }}
+	</div>
+</template>
+
+<template name="welcome">
+  <p>
+    Let's chat.
+  </p>
+</template>
+
+<template name="messages">
+  {{#each messages}}
+    <strong>{{name}}:</strong> {{message}}<br>
+  {{/each}}
+</template>
+
+<template name="input">
+  <p>Message: <input type="text" class="form-control" id="message"></p>
 </template>
 
 
